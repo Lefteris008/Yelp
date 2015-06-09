@@ -23,6 +23,8 @@ public class GetData {
      * @throws SQLException
      */
     public static void main(String[] args) throws SQLException {
+        
+        System.out.println();
 
         BufferedReader br1 = null;
         BufferedReader br2 = null;
