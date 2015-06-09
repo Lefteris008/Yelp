@@ -30,9 +30,9 @@ public class GetData {
 
             String sCurrentLine;
 
-            br1 = new BufferedReader(new FileReader(FilePaths.businessFilePath));
-            br2 = new BufferedReader(new FileReader(FilePaths.checkinFilePath));
-            
+            br1 = new BufferedReader(new FileReader(Configuration.businessFilePath));
+            br2 = new BufferedReader(new FileReader(Configuration.checkinFilePath));
+
             System.out.println("Started filling table BUSINESS_LOCATION");
             while ((sCurrentLine = br1.readLine()) != null) {
 
@@ -60,9 +60,9 @@ public class GetData {
                     e.printStackTrace();
                 }
             }
-            
+
             System.out.println("Successfully filled table BUSINESS_LOCATION");
-            br2 = new BufferedReader(new FileReader(FilePaths.checkinFilePath));
+            br2 = new BufferedReader(new FileReader(Configuration.checkinFilePath));
             System.out.println("Started filling table CHECKIN_INFO");
             while ((sCurrentLine = br2.readLine()) != null) {
                 Object obj;
@@ -71,19 +71,18 @@ public class GetData {
                     JSONObject jsonObject = (JSONObject) obj;
 
                     String businessID = (String) jsonObject.get("business_id");
-                    
-                    JSONObject checkinInfo = (JSONObject) jsonObject.get("checkin_info");
-                    
-                    for(Object key : checkinInfo.keySet()){
-                         String count = (String) checkinInfo.get(key).toString();
-                         String hour = key.toString().substring(0, key.toString().indexOf("-"));
-                         String day = key.toString().substring(key.toString().indexOf("-")+1);
-                         String sqlStatement2 = "INSERT INTO CHECKIN_INFO (business_id,checkin_day,checkin_hour,checkin_count) "
-                            + "VALUES ('" + businessID + "'," + day + ", " + hour + ", " + count +");";
-                        db.insert(sqlStatement2);
 
+                    JSONObject checkinInfo = (JSONObject) jsonObject.get("checkin_info");
+
+                    for (Object key : checkinInfo.keySet()) {
+                        String count = (String) checkinInfo.get(key).toString();
+                        String hour = key.toString().substring(0, key.toString().indexOf("-"));
+                        String day = key.toString().substring(key.toString().indexOf("-") + 1);
+                        String sqlStatement2 = "INSERT INTO CHECKIN_INFO (business_id,checkin_day,checkin_hour,checkin_count) "
+                                + "VALUES ('" + businessID + "'," + day + ", " + hour + ", " + count + ");";
+                        db.insert(sqlStatement2);
                     }
-                    
+
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
