@@ -42,10 +42,14 @@ public class DBHandling {
                                 + " stars double precision, " + " custom_category int) ";
                 stmt.executeUpdate(sql1);
                 
+                System.out.println("Successfully created table BUSINESS_LOCATION");
+                
                 String sql2 = "CREATE TABLE IF NOT EXISTS CHECKIN_INFO"
 				+ "(ID  SERIAL PRIMARY KEY, business_id char(100)," + " checkin_day  int NOT NULL, "
 				+ " checkin_hour int NOT NULL, " + " checkin_count int NOT NULL) ";
                 stmt.executeUpdate(sql2);
+                
+                System.out.println("Successfully created table CHECKIN_INFO");
                 
 		stmt.close();
 	}
