@@ -15,68 +15,93 @@ import org.json.simple.parser.ParseException;
 
 /**
  *
- * @author lefte_000
+ * @author paparas
  */
 public class GetData {
-	
-	public static String filePath = "C:\\Users\\lefte_000\\Downloads\\yelp\\yelp_academic_dataset_business.json";
-	/**
-	 * @param args
-	 *            the command line arguments
-	 * @throws SQLException 
-	 */
-	public static void main(String[] args) throws SQLException {
 
-		BufferedReader br = null;
-		JSONParser parser = new JSONParser();
-		DBHandling db = new DBHandling();
-		db.createTable();
-		try {
+    public static String businessFilePath = "C:\\Users\\lefte_000\\Downloads\\yelp\\yelp_academic_dataset_business.json";
+    public static String checkinFilePath = "C:\\Users\\lefte_000\\Downloads\\yelp\\yelp_academic_dataset_checkin.json";
 
-			String sCurrentLine;
+    /**
+     * @param args the command line arguments
+     * @throws SQLException
+     */
+    public static void main(String[] args) throws SQLException {
 
-			br = new BufferedReader(new FileReader(filePath));
+        BufferedReader br1 = null;
+        BufferedReader br2 = null;
+        JSONParser parser = new JSONParser();
+        DBHandling db = new DBHandling();
+        db.createTables();
+        try {
 
-			while ((sCurrentLine = br.readLine()) != null) {
+            String sCurrentLine;
 
-				Object obj;
-				try {
-					obj = parser.parse(sCurrentLine);
-					JSONObject jsonObject = (JSONObject) obj;
+            br1 = new BufferedReader(new FileReader(businessFilePath));
+            br2 = new BufferedReader(new FileReader(checkinFilePath));
+            while ((sCurrentLine = br1.readLine()) != null) {
 
-					String businessId = (String) jsonObject.get("business_id");
+                Object obj;
+                try {
+                    obj = parser.parse(sCurrentLine);
+                    JSONObject jsonObject = (JSONObject) obj;
+
+                    String businessId = (String) jsonObject.get("business_id");
 //					System.out.println(businessId);
 
-					double latitude = (double) jsonObject.get("latitude");
-					
-					double longitude = (double) jsonObject.get("longitude");
-					
-					String sqlStatement = "INSERT INTO BUSINESS_LOCATION (id,latitude,longitude) "
-							+ "VALUES ('"+businessId+"',"+latitude+", "+ longitude+"  );";
-					
-					db.insert(sqlStatement);
+                    double latitude = (double) jsonObject.get("latitude");
 
-//					for (Object key : hours.keySet()) {
-//						System.out.println(key + " " + hours.get(key));
-//
-//					}
+                    double longitude = (double) jsonObject.get("longitude");
 
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+                    String businessName = (String) jsonObject.get("business_name");
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (br != null)
-					br.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-		}
-	}
+                    double stars = (double) jsonObject.get("stars");
+
+                    String sqlStatement1 = "INSERT INTO BUSINESS_LOCATION (id,latitude,longitude,business_name,stars,custom_category) "
+                            + "VALUES ('" + businessId + "'," + latitude + ", " + longitude + ", " + businessName + ", " + stars + ", " + 0 + ");";
+                    db.insert(sqlStatement1);
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            br2 = new BufferedReader(new FileReader(checkinFilePath));
+            while ((sCurrentLine = br2.readLine()) != null) {
+                Object obj;
+                try {
+                    obj = parser.parse(sCurrentLine);
+                    JSONObject jsonObject = (JSONObject) obj;
+
+                    String businessID = (String) jsonObject.get("business_id");
+                    
+                    JSONObject checkinInfo = (JSONObject) jsonObject.get("checkin_info");
+                    
+                    for(Object key : checkinInfo.keySet()){
+                         String count = (String) checkinInfo.get(key).toString();
+                         String hour = key.toString().substring(0, key.toString().indexOf("-"));
+                         String day = key.toString().substring(key.toString().indexOf("-")+1);
+                         String sqlStatement2 = "INSERT INTO CHECKIN_INFO (business_id,checkin_day,checkin_hour,checkin_count) "
+                            + "VALUES ('" + businessID + "'," + day + ", " + hour + ", " + count +");";
+                        db.insert(sqlStatement2);
+
+                    }
+                    
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (br1 != null) {
+                    br1.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 
 }

@@ -32,13 +32,21 @@ public class DBHandling {
 		return c;
 	}
 
-	public void createTable() throws SQLException {
+	public void createTables() throws SQLException {
 		Statement stmt = null;
 		stmt = conn.createStatement();
-		String sql = "CREATE TABLE IF NOT EXISTS BUSINESS_LOCATION"
+                //Create a table with the ID of the business, its geolocation, name, stars and custom category
+		String sql1 = "CREATE TABLE IF NOT EXISTS BUSINESS_LOCATION"
 				+ "(ID char(100) PRIMARY KEY     NOT NULL," + " latitude  double precision  NOT NULL, "
-				+ " longitude double precision NOT NULL  )";
-		stmt.executeUpdate(sql);
+				+ " longitude double precision NOT NULL, " + " business_name char(100), "
+                                + " stars double precision, " + " custom_category int) ";
+                stmt.executeUpdate(sql1);
+                
+                String sql2 = "CREATE TABLE IF NOT EXISTS CHECKIN_INFO"
+				+ "(ID  SERIAL PRIMARY KEY, business_id char(100)," + " checkin_day  int NOT NULL, "
+				+ " checkin_hour int NOT NULL, " + " checkin_count int NOT NULL) ";
+                stmt.executeUpdate(sql2);
+                
 		stmt.close();
 	}
 
