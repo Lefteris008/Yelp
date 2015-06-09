@@ -15,16 +15,11 @@ import org.json.simple.parser.ParseException;
  */
 public class GetData {
 
-    public static String businessFilePath = "C:\\Users\\lefte_000\\Downloads\\yelp\\yelp_academic_dataset_business.json";
-    public static String checkinFilePath = "C:\\Users\\lefte_000\\Downloads\\yelp\\yelp_academic_dataset_checkin.json";
-
     /**
      * @param args the command line arguments
      * @throws SQLException
      */
     public static void main(String[] args) throws SQLException {
-        
-        System.out.println();
 
         BufferedReader br1 = null;
         BufferedReader br2 = null;
@@ -35,8 +30,8 @@ public class GetData {
 
             String sCurrentLine;
 
-            br1 = new BufferedReader(new FileReader(businessFilePath));
-            br2 = new BufferedReader(new FileReader(checkinFilePath));
+            br1 = new BufferedReader(new FileReader(FilePaths.businessFilePath));
+            br2 = new BufferedReader(new FileReader(FilePaths.checkinFilePath));
             
             System.out.println("Started filling table BUSINESS_LOCATION");
             while ((sCurrentLine = br1.readLine()) != null) {
@@ -67,7 +62,7 @@ public class GetData {
             }
             
             System.out.println("Successfully filled table BUSINESS_LOCATION");
-            br2 = new BufferedReader(new FileReader(checkinFilePath));
+            br2 = new BufferedReader(new FileReader(FilePaths.checkinFilePath));
             System.out.println("Started filling table CHECKIN_INFO");
             while ((sCurrentLine = br2.readLine()) != null) {
                 Object obj;
