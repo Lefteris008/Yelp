@@ -11,7 +11,6 @@ public class DBHandling {
 
 	public DBHandling() {
 		conn = dbConnection();
-                System.out.println("");
 	}
         
         public void closeDB() throws SQLException {
