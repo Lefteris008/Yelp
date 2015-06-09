@@ -15,7 +15,7 @@ import org.json.simple.parser.ParseException;
 
 /**
  *
- * @author paparas
+ * @author lefte_000
  */
 public class GetData {
 
@@ -39,6 +39,8 @@ public class GetData {
 
             br1 = new BufferedReader(new FileReader(businessFilePath));
             br2 = new BufferedReader(new FileReader(checkinFilePath));
+            
+            System.out.println("Started filling table BUSINESS_LOCATION");
             while ((sCurrentLine = br1.readLine()) != null) {
 
                 Object obj;
@@ -65,7 +67,10 @@ public class GetData {
                     e.printStackTrace();
                 }
             }
+            
+            System.out.println("Successfully filled table BUSINESS_LOCATION");
             br2 = new BufferedReader(new FileReader(checkinFilePath));
+            System.out.println("Started filling table CHECKIN_INFO");
             while ((sCurrentLine = br2.readLine()) != null) {
                 Object obj;
                 try {
@@ -90,6 +95,7 @@ public class GetData {
                     e.printStackTrace();
                 }
             }
+            System.out.println("Successfully filled table CHECKIN_INFO");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -97,6 +103,8 @@ public class GetData {
             try {
                 if (br1 != null) {
                     br1.close();
+                    //br2.close();
+                    db.closeDB();
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
