@@ -11,7 +11,7 @@ import org.json.simple.parser.ParseException;
 
 /**
  *
- * @author lefte_000
+ * @author Alex
  */
 public class GetData {
     
