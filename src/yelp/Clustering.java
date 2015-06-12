@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Set;
 import jdk.nashorn.internal.runtime.ParserException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -31,52 +32,25 @@ public class Clustering {
     }
     
     public static void transformJSONToHashMap() throws FileNotFoundException, IOException, ParseException {
-        BufferedReader br1 = null;
-        BufferedReader br2 = null;
+        BufferedReader br;
         JSONParser parser = new JSONParser();
-        String sCurrentLine, sLine;
-        br1 = new BufferedReader(new FileReader(Configuration.categoriesFilePath));
-        while ((sCurrentLine = br1.readLine()) != null) {
+        String sCurrentLine;
+        br = new BufferedReader(new FileReader(Configuration.categories2FilePath));
+        while ((sCurrentLine = br.readLine()) != null) {
             Object obj;
-            String alias, currentParent, realParent;
+            String alias, parent;
             try {
                 obj = parser.parse(sCurrentLine);
                 JSONObject jsonObject = (JSONObject) obj;
-                alias = (String) jsonObject.get("alias");
-                currentParent = (String) jsonObject.get("parent");
-                realParent = "null";
-                if(currentParent.equals("null")) {
-                    jsonFile.put(alias, alias); // Alias is a parent category itselft
-                } else { //The alias is not a parent category
-                    while(!currentParent.equals("null")) {
-                        //Open the file again and iterate until you find it
-                        br2 = new BufferedReader(new FileReader(Configuration.categoriesFilePath));
-                        while ((sLine = br2.readLine()) != null) {
-                            //Get next element
-                            obj = parser.parse(sCurrentLine);
-                            jsonObject = (JSONObject) obj;
-                            
-                            //Find the listing of the previous currentParent
-                            if(jsonObject.get("alias").toString().equals(currentParent)) {
-                                //Store its parent
-                                realParent = (String) jsonObject.get("parent");
-                                
-                                //If it is a real parent, terminate the iteration
-                                if(realParent.equals("null")) {
-                                    realParent = currentParent;
-                                    br2.close();
-                                    break;
-                                }
-                            }
-                        }
-                        jsonFile.put(alias, realParent); // Store the parent category of the alias
-                    }
-                }
+                alias = jsonObject.get("alias").toString();
+                parent = jsonObject.get("parents").toString();
+                parent = parent.replaceAll("[^\\dA-Za-z ]", "");
+                jsonFile.put(alias, parent);
             } catch(ParserException e) {
                 e.printStackTrace();
             }
         }
-        br1.close();
+        br.close();
     }
     
     public static void storeClusters() {
@@ -84,9 +58,25 @@ public class Clustering {
     }
     
     public static void findParentCategory() throws FileNotFoundException, IOException, ParseException {
-        
-        
-        
+        String alias, currentParent, actualParent = "null";
+        Set<String> keys = jsonFile.keySet();
+        for(String key : keys) {
+            
+            //For every single key
+            alias = key; //Get its alias
+            currentParent = jsonFile.get(key); //Get its parent
+            try {
+            while(!currentParent.equals("null")) { //While this key is not a root parent
+                actualParent = currentParent;
+                currentParent = jsonFile.get(currentParent); //Iterate until you find it
+                
+            }
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+            categories.put(alias, actualParent);
+        }
+        System.out.println("");
     }
     
     public static void configureJSON() throws FileNotFoundException, IOException {
@@ -94,11 +84,14 @@ public class Clustering {
         BufferedWriter bw = new BufferedWriter(new FileWriter(Configuration.categories2FilePath));
         String sCurrentLine, newLine = "";
         while ((sCurrentLine = br1.readLine()) != null) {
+            if(sCurrentLine.equals("[")) {
+                continue;
+            }
             //Find the new JSON instance
             if(!sCurrentLine.equals("    },")) {
                 newLine = newLine + sCurrentLine.replaceAll("\n", "");
             } else {
-                newLine = newLine + "},\n";
+                newLine = newLine + "}\n";
                 newLine = newLine.replaceAll(" ", "");
                 //Store it into the new file
                 bw.write(newLine);

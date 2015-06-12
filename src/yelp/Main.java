@@ -14,8 +14,8 @@ public class Main {
     public static void main(String[] args) throws SQLException, IOException, FileNotFoundException, ParseException{
         
         //GetData.storeData();
-        //Clustering.transformJSONToHashMap();
-        Clustering.configureJSON();
-        
+        Clustering.transformJSONToHashMap();
+        Clustering.findParentCategory();
+        System.out.println("Reached there!");
     }
 }
