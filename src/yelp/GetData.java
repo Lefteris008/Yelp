@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
+import org.json.simple.JSONArray;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -15,13 +17,24 @@ import org.json.simple.parser.ParseException;
  */
 public class GetData {
     
+    public static HashMap<String,Integer> categories = new HashMap<>();
+    
     public static String cleanString(String s) {
-        String cleanString = null;
+        String cleanString;
         cleanString = s.replaceAll("\n", "");
         cleanString = cleanString.replaceAll("\'", " ");
         cleanString = cleanString.replaceAll(",", " ");
         
         return cleanString;
+    }
+    
+    public static void storeDataIntoHashMap(String category) {
+        
+        if(categories.containsKey(category)) {
+            categories.put(category, categories.get(category)+1);
+        } else {
+            categories.put(category, 1);
+        }
     }
     
     public static void storeData() throws SQLException {
@@ -55,8 +68,12 @@ public class GetData {
                     businessAddress = cleanString(businessAddress);
                     String city = (String) jsonObject.get("city");
                     city = cleanString(city);
+                    JSONArray category = (JSONArray) jsonObject.get("categories");
+                    category.stream().forEach((cat) -> {
+                        storeDataIntoHashMap(cat.toString());
+                    });
                     sqlStmt = "INSERT INTO BUSINESS_LOCATION (id,latitude,longitude,business_name,stars,full_address,city) "
-                            + "VALUES ('" + businessId + "'," + latitude + ", " + longitude + ", '" + businessName + "', " + stars + ", '" + businessAddress + "', " + city + ");";
+                            + "VALUES ('" + businessId + "'," + latitude + ", " + longitude + ", '" + businessName + "', " + stars + ", '" + businessAddress + "', '" + city + "');";
                     db.executeStmt(sqlStmt);
                 } catch (ParseException e) {
                     e.printStackTrace();
