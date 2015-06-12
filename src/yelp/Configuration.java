@@ -13,6 +13,7 @@ public class  Configuration {
     
     public static String businessFilePath = "C:\\Users\\lefte_000\\Downloads\\yelp\\yelp_academic_dataset_business.json";
     public static String checkinFilePath = "C:\\Users\\lefte_000\\Downloads\\yelp\\yelp_academic_dataset_checkin.json";
+    public static String categoriesFilePath = "C:\\Users\\lefte_000\\Downloads\\yelp\\categories.json";
     public static String postgresConn = "jdbc:postgresql://localhost:5432/postgres";
     public static String dbName = "postgres";
     public static String dbPassword = "password";
