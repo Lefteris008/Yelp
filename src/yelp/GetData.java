@@ -69,8 +69,8 @@ public class GetData {
                     String city = (String) jsonObject.get("city");
                     city = cleanString(city);
                     JSONArray category = (JSONArray) jsonObject.get("categories");
-                    category.stream().forEach((cat) -> {
-                        storeDataIntoHashMap(cat.toString());
+                    category.stream().forEach((categ) -> {
+                        storeDataIntoHashMap(categ.toString());
                     });
                     sqlStmt = "INSERT INTO BUSINESS_LOCATION (id,latitude,longitude,business_name,stars,full_address,city) "
                             + "VALUES ('" + businessId + "'," + latitude + ", " + longitude + ", '" + businessName + "', " + stars + ", '" + businessAddress + "', '" + city + "');";
@@ -100,7 +100,9 @@ public class GetData {
                 }
             }
             System.out.println("Successfully filled table CHECKIN_INFO");
-            sqlStmt = "CREATE INDEX checkin_index ON checkin_info (checkin_time)";
+            sqlStmt = "CREATE INDEX checkin_index ON CHECKIN_INFO (checkin_time)";
+            db.executeStmt(sqlStmt);
+            sqlStmt = "CREATE INDEX business_index ON BUSINESS_LOCATION (city)";
             db.executeStmt(sqlStmt);
         } catch (IOException e) {
             e.printStackTrace();
