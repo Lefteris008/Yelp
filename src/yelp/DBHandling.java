@@ -46,7 +46,7 @@ public class DBHandling {
         sql = "CREATE TABLE IF NOT EXISTS BUSINESS_LOCATION"
                 + "(ID char(100) PRIMARY KEY     NOT NULL," + " latitude  double precision  NOT NULL, "
                 + " longitude double precision NOT NULL, " + " business_name char(100), "
-                + " stars double precision, " + " custom_category int) ";
+                + " stars double precision, " + " full_address char(200), " + "city char(100)) ";
         stmt.executeUpdate(sql);
 
         System.out.println("Successfully created table BUSINESS_LOCATION");

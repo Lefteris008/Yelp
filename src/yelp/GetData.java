@@ -15,6 +15,15 @@ import org.json.simple.parser.ParseException;
  */
 public class GetData {
     
+    public static String cleanString(String s) {
+        String cleanString = null;
+        cleanString = s.replaceAll("\n", "");
+        cleanString = cleanString.replaceAll("\'", " ");
+        cleanString = cleanString.replaceAll(",", " ");
+        
+        return cleanString;
+    }
+    
     public static void storeData() throws SQLException {
 
         BufferedReader br1 = null;
@@ -39,10 +48,15 @@ public class GetData {
                     String businessId = (String) jsonObject.get("business_id");
                     double latitude = (double) jsonObject.get("latitude");
                     double longitude = (double) jsonObject.get("longitude");
-                    String businessName = (String) jsonObject.get("business_name");
+                    String businessName = (String) jsonObject.get("name");
+                    businessName = cleanString(businessName);
                     double stars = (double) jsonObject.get("stars");
-                    sqlStmt = "INSERT INTO BUSINESS_LOCATION (id,latitude,longitude,business_name,stars,custom_category) "
-                            + "VALUES ('" + businessId + "'," + latitude + ", " + longitude + ", " + businessName + ", " + stars + ", " + 0 + ");";
+                    String businessAddress = (String) jsonObject.get("full_address");
+                    businessAddress = cleanString(businessAddress);
+                    String city = (String) jsonObject.get("city");
+                    city = cleanString(city);
+                    sqlStmt = "INSERT INTO BUSINESS_LOCATION (id,latitude,longitude,business_name,stars,full_address,city) "
+                            + "VALUES ('" + businessId + "'," + latitude + ", " + longitude + ", '" + businessName + "', " + stars + ", '" + businessAddress + "', " + city + ");";
                     db.executeStmt(sqlStmt);
                 } catch (ParseException e) {
                     e.printStackTrace();
