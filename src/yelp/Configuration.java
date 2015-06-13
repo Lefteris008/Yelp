@@ -1,13 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package yelp;
 
 /**
  *
- * @author Alex
+ * @author  Paraskevas Eleftherios (585)
+ * @author  Pliakis Nikolaos (589)
+ * @author  Tzanakas Alexandros (597)
+ * @version 2015.06.13_2038
  */
 public class  Configuration {
     
@@ -18,5 +16,7 @@ public class  Configuration {
     public static String postgresConn = "jdbc:postgresql://localhost:5432/postgres";
     public static String dbName = "postgres";
     public static String dbPassword = "password";
-    
+    public static String businessTableName = "BUSINESS_LOCATION";
+    public static String checkinTableName = "CHECKIN_INFO";
+    public static String clusterTableName = "PARENT_CLUSTERS";
 }

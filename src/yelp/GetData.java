@@ -13,7 +13,10 @@ import org.json.simple.parser.ParseException;
 
 /**
  *
- * @author Alex
+ * @author  Paraskevas Eleftherios (585)
+ * @author  Pliakis Nikolaos (589)
+ * @author  Tzanakas Alexandros (597)
+ * @version 2015.06.13_2038
  */
 public class GetData {
     
@@ -26,15 +29,6 @@ public class GetData {
         cleanString = cleanString.replaceAll(",", " ");
         
         return cleanString;
-    }
-    
-    public static void storeDataIntoHashMap(String category) {
-        
-        if(categories.containsKey(category)) {
-            categories.put(category, categories.get(category)+1);
-        } else {
-            categories.put(category, 1);
-        }
     }
     
     public static void storeData() throws SQLException {
@@ -51,7 +45,7 @@ public class GetData {
             br1 = new BufferedReader(new FileReader(Configuration.businessFilePath));
             br2 = new BufferedReader(new FileReader(Configuration.checkinFilePath));
 
-            System.out.println("Started filling table BUSINESS_LOCATION");
+            System.out.println("Started filling table "+Configuration.businessTableName);
             while ((sCurrentLine = br1.readLine()) != null) {
 
                 Object obj;
@@ -69,19 +63,18 @@ public class GetData {
                     String city = (String) jsonObject.get("city");
                     city = cleanString(city);
                     JSONArray category = (JSONArray) jsonObject.get("categories");
-                    category.stream().forEach((categ) -> {
-                        storeDataIntoHashMap(categ.toString());
-                    });
-                    sqlStmt = "INSERT INTO BUSINESS_LOCATION (id,latitude,longitude,business_name,stars,full_address,city) "
+                    
+                    sqlStmt = "INSERT INTO "+Configuration.businessTableName+" (id,latitude,longitude,business_name,stars,full_address,city) "
                             + "VALUES ('" + businessId + "'," + latitude + ", " + longitude + ", '" + businessName + "', " + stars + ", '" + businessAddress + "', '" + city + "');";
                     db.executeStmt(sqlStmt);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
             }
-            System.out.println("Successfully filled table BUSINESS_LOCATION");
+            System.out.println("Successfully filled table "+Configuration.businessTableName);
             br2 = new BufferedReader(new FileReader(Configuration.checkinFilePath));
-            System.out.println("Started filling table CHECKIN_INFO");
+            
+            System.out.println("Started filling table "+Configuration.checkinTableName);
             while ((sCurrentLine = br2.readLine()) != null) {
                 Object obj;
                 try {
@@ -91,7 +84,7 @@ public class GetData {
                     JSONObject checkinInfo = (JSONObject) jsonObject.get("checkin_info");
                     for (Object key : checkinInfo.keySet()) {
                         String count = (String) checkinInfo.get(key).toString();
-                        sqlStmt = "INSERT INTO CHECKIN_INFO (business_id, checkin_time, checkin_count) "
+                        sqlStmt = "INSERT INTO "+Configuration.checkinTableName+" (business_id, checkin_time, checkin_count) "
                                 + "VALUES ('" + businessID + "','" + key.toString() + "', " + count + ");";
                         db.executeStmt(sqlStmt);
                     }
@@ -99,10 +92,10 @@ public class GetData {
                     e.printStackTrace();
                 }
             }
-            System.out.println("Successfully filled table CHECKIN_INFO");
-            sqlStmt = "CREATE INDEX checkin_index ON CHECKIN_INFO (checkin_time)";
+            System.out.println("Successfully filled table "+Configuration.checkinTableName);
+            sqlStmt = "CREATE INDEX checkin_index ON "+Configuration.checkinTableName+" (checkin_time)";
             db.executeStmt(sqlStmt);
-            sqlStmt = "CREATE INDEX business_index ON BUSINESS_LOCATION (city)";
+            sqlStmt = "CREATE INDEX business_index ON "+Configuration.businessTableName+" (city)";
             db.executeStmt(sqlStmt);
         } catch (IOException e) {
             e.printStackTrace();

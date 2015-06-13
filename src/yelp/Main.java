@@ -7,15 +7,16 @@ import org.json.simple.parser.ParseException;
 
 /**
  *
- * @author Alex
+ * @author  Paraskevas Eleftherios (585)
+ * @author  Pliakis Nikolaos (589)
+ * @author  Tzanakas Alexandros (597)
+ * @version 2015.6.13.2036
  */
 public class Main {
     
     public static void main(String[] args) throws SQLException, IOException, FileNotFoundException, ParseException{
         
         //GetData.storeData();
-        Clustering.transformJSONToHashMap();
-        Clustering.findParentCategory();
-        System.out.println("Reached there!");
+        Clustering.getParentClustersFromJSON();
     }
 }
