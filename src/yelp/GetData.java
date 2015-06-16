@@ -31,7 +31,7 @@ public class GetData {
         return cleanString;
     }
     
-    public static void storeData() throws SQLException {
+    public static void storeData(Clustering clus) throws SQLException {
 
         BufferedReader br1 = null;
         BufferedReader br2 = null;
@@ -62,7 +62,7 @@ public class GetData {
                         sum += Integer.parseInt(count);
                         sqlStmt = "INSERT INTO " + Configuration.checkinTableName + " (business_id, checkin_time, checkin_count) "
                                 + "VALUES ('" + businessID + "','" + key.toString() + "', " + count + ");";
-                        db.executeStmt(sqlStmt);
+                        //db.executeStmt(sqlStmt);
                     }
                     checkInCount.put(businessID, sum);
                 } catch (ParseException e) {
@@ -79,12 +79,8 @@ public class GetData {
                     obj = parser.parse(sCurrentLine);
                     JSONObject jsonObject = (JSONObject) obj;
                     String businessId = (String) jsonObject.get("business_id");
-                    try {
                     if(!isBusinessPromising(businessId)) {
                         continue;
-                    }
-                    } catch(NullPointerException e) {
-                        e.printStackTrace();
                     }
                     double latitude = (double) jsonObject.get("latitude");
                     double longitude = (double) jsonObject.get("longitude");
@@ -98,7 +94,7 @@ public class GetData {
                     JSONArray category = (JSONArray) jsonObject.get("categories");
                     String customCategory = "";
                     for (Object category1 : category) {
-                        if (Clustering.isParentCluster(category1.toString())) {
+                        if (clus.isParentCluster(category1.toString())) {
                             customCategory = category1.toString();
                             break;
                         }

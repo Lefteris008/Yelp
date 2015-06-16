@@ -27,7 +27,7 @@ public class Clustering {
         ///
     }
     
-    public static boolean getParentClustersFromJSON() throws FileNotFoundException, IOException, ParseException {
+    public boolean getParentClustersFromJSON() throws FileNotFoundException, IOException, ParseException {
         BufferedReader br;
         JSONParser parser = new JSONParser();
         String sCurrentLine;
@@ -66,7 +66,7 @@ public class Clustering {
         );
      }
     
-    public static boolean isParentCluster(String category) {
+    public boolean isParentCluster(String category) {
         return parentClusters.contains(category);
     }
     
