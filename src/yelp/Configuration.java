@@ -5,7 +5,7 @@ package yelp;
  * @author  Paraskevas Eleftherios (585)
  * @author  Pliakis Nikolaos (589)
  * @author  Tzanakas Alexandros (597)
- * @version 2015.06.13_2038
+ * @version 2015.06.16_1640
  */
 public class  Configuration {
     
@@ -18,5 +18,5 @@ public class  Configuration {
     public static String dbPassword = "password";
     public static String businessTableName = "BUSINESS_LOCATION";
     public static String checkinTableName = "CHECKIN_INFO";
-    public static String clusterTableName = "PARENT_CLUSTERS";
+    public static String userTableName = "USER_INFO";
 }

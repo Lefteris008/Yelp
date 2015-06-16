@@ -10,7 +10,7 @@ import java.sql.Statement;
  * @author  Paraskevas Eleftherios (585)
  * @author  Pliakis Nikolaos (589)
  * @author  Tzanakas Alexandros (597)
- * @version 2015.06.13_2037
+ * @version 2015.06.16_1640
  */
 
 public class DBHandling {
@@ -50,14 +50,15 @@ public class DBHandling {
         sql = "DROP TABLE IF EXISTS " + Configuration.checkinTableName;
         stmt.executeUpdate(sql);
         
-        sql = "DROP TABLE IF EXISTS " + Configuration.clusterTableName;
+        sql = "DROP TABLE IF EXISTS " + Configuration.userTableName;
         stmt.executeUpdate(sql);
+        
         
         //Create a table with the ID of the business, its geolocation, name, stars and custom category
         sql = "CREATE TABLE IF NOT EXISTS " + Configuration.businessTableName
                 + "(ID char(100) PRIMARY KEY     NOT NULL," + " latitude  double precision  NOT NULL, "
                 + " longitude double precision NOT NULL, " + " business_name char(100), "
-                + " stars double precision, " + " full_address char(200), " + "city char(100)) ";
+                + " stars double precision, " + " full_address char(200), " + "city char(100), " + "category char(100)) ";
         stmt.executeUpdate(sql);
 
         System.out.println("Successfully created table " + Configuration.businessTableName);
@@ -68,11 +69,11 @@ public class DBHandling {
 
         System.out.println("Successfully created table " + Configuration.checkinTableName);
 
-        sql = "CREATE TABLE IF NOT EXISTS " + Configuration.clusterTableName
-                + "(ID  SERIAL PRIMARY KEY, parent_category char(100)) ";
+        sql = "CREATE TABLE IF NOT EXISTS " + Configuration.userTableName
+                + "(ID  SERIAL PRIMARY KEY, user_id char(100), first_choice char(100), second_choice char(100), third_choice char(100)) ";
         stmt.executeUpdate(sql);
 
-        System.out.println("Successfully created table " + Configuration.clusterTableName);
+        System.out.println("Successfully created table " + Configuration.userTableName);
         stmt.close();
     }
 

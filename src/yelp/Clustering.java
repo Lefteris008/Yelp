@@ -16,7 +16,7 @@ import org.json.simple.parser.ParseException;
  * @author  Paraskevas Eleftherios (585)
  * @author  Pliakis Nikolaos (589)
  * @author  Tzanakas Alexandros (597)
- * @version 2015.06.13_2036
+ * @version 2015.06.16_1640
  */
 
 public class Clustering {
