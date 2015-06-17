@@ -64,7 +64,7 @@ public class DBHandling {
         System.out.println("Successfully created table " + Configuration.businessTableName);
 
         sql = "CREATE TABLE IF NOT EXISTS " + Configuration.checkinTableName
-                + "(ID  SERIAL PRIMARY KEY, business_id char(100)," + " checkin_time char(10), " + " checkin_count int NOT NULL) ";
+                + "(ID  SERIAL PRIMARY KEY, business_id char(100)," + " checkin_day int, " + "checkin_time int, " + " checkin_count int NOT NULL) ";
         stmt.executeUpdate(sql);
 
         System.out.println("Successfully created table " + Configuration.checkinTableName);

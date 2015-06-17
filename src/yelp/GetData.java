@@ -31,6 +31,10 @@ public class GetData {
         return cleanString;
     }
     
+    public static void getDataFromDBs(String businessId, int checkInDay, int checkInHour, int hops, int choice, String[] categories) {
+        
+    }
+    
     public static void storeData(Clustering clus) throws SQLException {
 
         BufferedReader br1 = null;
@@ -55,14 +59,17 @@ public class GetData {
                     obj = parser.parse(sCurrentLine);
                     JSONObject jsonObject = (JSONObject) obj;
                     String businessID = (String) jsonObject.get("business_id");
+                    String day, time;
                     JSONObject checkinInfo = (JSONObject) jsonObject.get("checkin_info");
                     sum = 0;
                     for (Object key : checkinInfo.keySet()) {
+                        day = key.toString().substring(key.toString().indexOf("-")+1);
+                        time = key.toString().substring(0, key.toString().indexOf("-"));
                         String count = (String) checkinInfo.get(key).toString();
                         sum += Integer.parseInt(count);
-                        sqlStmt = "INSERT INTO " + Configuration.checkinTableName + " (business_id, checkin_time, checkin_count) "
-                                + "VALUES ('" + businessID + "','" + key.toString() + "', " + count + ");";
-                        //db.executeStmt(sqlStmt);
+                        sqlStmt = "INSERT INTO " + Configuration.checkinTableName + " (business_id, checkin_day, checkin_time, checkin_count) "
+                                + "VALUES ('" + businessID + "'," + day + ", " + time + "," + count + ");";
+                        db.executeStmt(sqlStmt);
                     }
                     checkInCount.put(businessID, sum);
                 } catch (ParseException e) {
@@ -79,7 +86,7 @@ public class GetData {
                     obj = parser.parse(sCurrentLine);
                     JSONObject jsonObject = (JSONObject) obj;
                     String businessId = (String) jsonObject.get("business_id");
-                    if(!isBusinessPromising(businessId)) {
+                    if(!isFilteredOut(businessId)) {
                         continue;
                     }
                     double latitude = (double) jsonObject.get("latitude");
@@ -128,7 +135,7 @@ public class GetData {
         }
     }
     
-    public static boolean isBusinessPromising(String businessId) {
+    public static boolean isFilteredOut(String businessId) {
         if(checkInCount.containsKey(businessId)) {
             if(checkInCount.get(businessId) >= 100) {
                 return true;
