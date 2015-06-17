@@ -32,7 +32,27 @@ public class GetData {
     }
     
     public static void getDataFromDBs(String businessId, int checkInDay, int checkInHour, int hops, int choice, String[] categories) {
+        DBHandling db = new DBHandling();
         
+        double latitude;
+        double longitude;
+        String city;
+        String category;
+        String stmt =   "SELECT latitude, longitude, business_name, stars, full_address, city, category" +
+                        "FROM " + Configuration.businessTableName + 
+                        "WHERE id = " + businessId;
+        //TODO
+        //Create method to execute SQL query and return results
+        //Execute the statement
+        //Store the variables
+        if(choice == 1) { //Automatic mode, return everything
+            //stmt = 
+        } else if(choice == 2) { //Manual mode, the user has supplied a chain
+            
+        } else {    //choice == 3, Semi-manual mode, get the preferences of the user
+                    //from the USER_INFO table
+            
+        }
     }
     
     public static void storeData(Clustering clus) throws SQLException {

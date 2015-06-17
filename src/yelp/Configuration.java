@@ -19,4 +19,7 @@ public class  Configuration {
     public static String businessTableName = "BUSINESS_LOCATION";
     public static String checkinTableName = "CHECKIN_INFO";
     public static String userTableName = "USER_INFO";
+    public static String dataParentFolder = "/data/";
+    public static String resultJSONFile = "results.json";
+    
 }
