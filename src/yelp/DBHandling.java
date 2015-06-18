@@ -2,8 +2,11 @@ package yelp;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -85,4 +88,23 @@ public class DBHandling {
         stmt.close();
         conn.commit();
     }
+    
+    public HashMap executeStmtWithResults(String sqlStatement) throws SQLException{
+        Statement st = null;
+        ResultSet rs = null;
+        HashMap results =new HashMap();
+        
+        st = conn.createStatement();
+        rs = st.executeQuery(sqlStatement);
+        while (rs.next()) {
+            ArrayList info = new ArrayList();
+            info.add(rs.getString(5));
+            info.add(rs.getString(6));
+            info.add(rs.getString(7));
+            info.add(rs.getString(8));
+            results.put(rs.getString(1), info);
+        }
+        return results;
+    }
+    
 }
