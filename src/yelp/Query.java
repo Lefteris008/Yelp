@@ -20,8 +20,8 @@ public class Query {
     public static void makeQuery(int hops, double latitude, double longitude, int radius, int day, int time, int interval) throws SQLException {
         DBHandling db = new DBHandling();
         String sqlStmt;
-        HashMap results = new HashMap();
-        HashMap resultsHops = new HashMap();
+        ArrayList results = new ArrayList();
+        ArrayList resultsHops = new ArrayList();
         ArrayList list = new ArrayList();
         ArrayList aux = new ArrayList();
         list.add(Float.toString((float) latitude));
@@ -32,22 +32,31 @@ public class Query {
         list.add(Integer.toString(time + interval));
         list.add(Integer.toString(3));
         results = db.executeStmtWithResults(stringQuery(list));
-        for (Object k : results.keySet()) {
-                System.out.println(results.get(k));
+        for (int i = 0; i<results.size(); i++) {
+                System.out.println(results.get(i));
             }
         for (int i = 1; i < hops; i++) {
             time = time + interval;
-            System.out.println(time);
-            for (Object k : results.keySet()) {
-                aux = (ArrayList) results.get(k);
-                list.set(0, aux.get(1));
-                list.set(1, aux.get(2));
-                list.set(5, time);
+            System.out.println("Starting Time: " + time);
+            for (Object result : results) {
+                // Change the parameters for the new query. aux has the info from previous results
+                aux = (ArrayList) result;
+                // Set the longitude, latitude according to previous business
+                list.set(0, aux.get(2));
+                list.set(1, aux.get(3));
+                // Change the time
+                list.set(4, time);
+                list.set(5, time + interval);
+                // Change the number of the results
                 list.set(6, 1);
-                resultsHops = db.executeStmtWithResults(stringQuery(list));
-                System.out.println(resultsHops);
+                resultsHops.add(db.executeStmtWithResults(stringQuery(list)).get(0));
             }
-            results = resultsHops;
+            results.clear();
+            for (Object resultsHop : resultsHops) {
+                System.out.println(resultsHop);
+                results.add(resultsHop);
+            }
+            resultsHops.clear();
         }
     }
 

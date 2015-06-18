@@ -89,20 +89,21 @@ public class DBHandling {
         conn.commit();
     }
     
-    public HashMap executeStmtWithResults(String sqlStatement) throws SQLException{
+    public ArrayList executeStmtWithResults(String sqlStatement) throws SQLException{
         Statement st = null;
         ResultSet rs = null;
-        HashMap results =new HashMap();
+        ArrayList results =new ArrayList();
         
         st = conn.createStatement();
         rs = st.executeQuery(sqlStatement);
         while (rs.next()) {
             ArrayList info = new ArrayList();
+            info.add(rs.getString(1));
             info.add(rs.getString(5));
             info.add(rs.getString(6));
             info.add(rs.getString(7));
             info.add(rs.getString(8));
-            results.put(rs.getString(1), info);
+            results.add(info);
         }
         return results;
     }
