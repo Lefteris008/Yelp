@@ -17,13 +17,17 @@ import java.util.HashMap;
  */
 public class Query {
 
+    private static HashMap distinct = new HashMap();
+
     public static void makeQuery(int hops, double latitude, double longitude, int radius, int day, int time, int interval) throws SQLException {
+        int hop = 1;
+        HashMap finalResults = new HashMap();
         DBHandling db = new DBHandling();
-        String sqlStmt;
         ArrayList results = new ArrayList();
         ArrayList resultsHops = new ArrayList();
         ArrayList list = new ArrayList();
         ArrayList aux = new ArrayList();
+        ArrayList finalList = new ArrayList();
         list.add(Float.toString((float) latitude));
         list.add(Float.toString((float) longitude));
         list.add(Integer.toString(radius));
@@ -32,12 +36,15 @@ public class Query {
         list.add(Integer.toString(time + interval));
         list.add(Integer.toString(3));
         results = db.executeStmtWithResults(stringQuery(list));
-        for (int i = 0; i<results.size(); i++) {
-                System.out.println(results.get(i));
-            }
+        for (int i = 0; i < results.size(); i++) {
+            aux = (ArrayList) results.get(i);
+            distinct.put(aux.get(0),hop);
+            finalList.add(aux);
+            finalResults.put(hop, finalList);
+        }
         for (int i = 1; i < hops; i++) {
+            hop++;
             time = time + interval;
-            System.out.println("Starting Time: " + time);
             for (Object result : results) {
                 // Change the parameters for the new query. aux has the info from previous results
                 aux = (ArrayList) result;
@@ -47,22 +54,34 @@ public class Query {
                 // Change the time
                 list.set(4, time);
                 list.set(5, time + interval);
-                // Change the number of the results
-                list.set(6, 1);
-                resultsHops.add(db.executeStmtWithResults(stringQuery(list)).get(0));
+                // The number of the results are 3
+                list.set(6, 3);
+                aux = db.executeStmtWithResults(stringQuery(list));
+                aux = containsKey(aux);
+                resultsHops.add(aux.get(0));
             }
+            // For the next hop clear saved IDs. The user gets results that may have been excluded
+            
             results.clear();
+            // Save the results for the starting points of the next iteration
+            finalList = new ArrayList();
             for (Object resultsHop : resultsHops) {
-                System.out.println(resultsHop);
                 results.add(resultsHop);
+                finalList.add(resultsHop);
+                finalResults.put(hop, finalList);
             }
+            // Clear the auxiliary arraylist
             resultsHops.clear();
+        }
+        // Key are the number of hop and value is an ArrayList with all businesses in the specific hop
+        for(Object c : finalResults.keySet()){
+            System.out.println(finalResults.get(c)+" "+c);
         }
     }
 
     private static String stringQuery(ArrayList list) {
         String sqlStmt;
-        sqlStmt = "SELECT t.business_id, t.checkin_day, t.checkin_time, t.checkin_count, business_location.business_name, business_location.latitude, business_location.longitude,\n"
+        sqlStmt = "SELECT t.business_id, t.checkin_day, t.checkin_time, t.checkin_count, business_location.business_name, business_location.latitude, business_location.longitude, business_location.stars,\n"
                 + "       CASE WHEN lTime - checkin_time = 1 THEN lCount - checkin_count\n"
                 + "            ELSE NULL\n"
                 + "       END as difference \n"
@@ -84,5 +103,17 @@ public class Query {
                 + "ORDER BY difference DESC\n"
                 + "LIMIT " + list.get(6);
         return sqlStmt;
+    }
+
+    private static ArrayList containsKey(ArrayList list) {
+        for (int i = 0; i < list.size(); i++) {
+            ArrayList aux = (ArrayList) list.get(i);
+            if (!distinct.containsKey(aux.get(0))) {
+                list.clear();
+                list.add(aux);
+                distinct.put(aux.get(0), 1);
+            }
+        }
+        return list;
     }
 }

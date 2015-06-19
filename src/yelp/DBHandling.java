@@ -59,15 +59,15 @@ public class DBHandling {
         
         //Create a table with the ID of the business, its geolocation, name, stars and custom category
         sql = "CREATE TABLE IF NOT EXISTS " + Configuration.businessTableName
-                + "(ID char(100) PRIMARY KEY     NOT NULL," + " latitude  double precision  NOT NULL, "
-                + " longitude double precision NOT NULL, " + " business_name char(100), "
-                + " stars double precision, " + " full_address char(200), " + "city char(100), " + "category char(100)) ";
+                + "(ID char(30) PRIMARY KEY     NOT NULL," + " latitude  double precision  NOT NULL, "
+                + " longitude double precision NOT NULL, " + " business_name char(50), "
+                + " stars double precision, " + " full_address char(200), " + "city char(30), " + "category char(100)) ";
         stmt.executeUpdate(sql);
 
         System.out.println("Successfully created table " + Configuration.businessTableName);
 
         sql = "CREATE TABLE IF NOT EXISTS " + Configuration.checkinTableName
-                + "(ID  SERIAL PRIMARY KEY, business_id char(100)," + " checkin_day int, " + "checkin_time int, " + " checkin_count int NOT NULL) ";
+                + "(ID  SERIAL PRIMARY KEY, business_id char(30)," + " checkin_day int, " + "checkin_time int, " + " checkin_count int NOT NULL) ";
         stmt.executeUpdate(sql);
 
         System.out.println("Successfully created table " + Configuration.checkinTableName);
@@ -98,11 +98,17 @@ public class DBHandling {
         rs = st.executeQuery(sqlStatement);
         while (rs.next()) {
             ArrayList info = new ArrayList();
+            // Get the ID of the business
             info.add(rs.getString(1));
+            // Get the name of the business
             info.add(rs.getString(5));
+            // Get Latitude and Longitude
             info.add(rs.getString(6));
             info.add(rs.getString(7));
+            // Get stars
             info.add(rs.getString(8));
+            // Get difference in number of check-ins
+            info.add(rs.getString(9));
             results.add(info);
         }
         return results;

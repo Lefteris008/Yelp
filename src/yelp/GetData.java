@@ -138,6 +138,10 @@ public class GetData {
             db.executeStmt(sqlStmt);
             sqlStmt = "CREATE INDEX business_index ON " + Configuration.businessTableName + " (city)";
             db.executeStmt(sqlStmt);
+            sqlStmt = "CREATE EXTENSION cube";
+            db.executeStmt(sqlStmt);
+            sqlStmt = "CREATE EXTENSION earthdistance";
+            db.executeStmt(sqlStmt);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
