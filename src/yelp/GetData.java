@@ -134,10 +134,15 @@ public class GetData {
                 }
             }
             System.out.println("Successfully filled table " + Configuration.businessTableName);
-            sqlStmt = "CREATE INDEX checkin_index ON " + Configuration.checkinTableName + " (checkin_time)";
+            sqlStmt = "CREATE INDEX checkin_index_on_time ON " + Configuration.checkinTableName + " (checkin_time)";
             db.executeStmt(sqlStmt);
-            sqlStmt = "CREATE INDEX business_index ON " + Configuration.businessTableName + " (city)";
+            sqlStmt = "CREATE INDEX checkin_index_on_day ON " + Configuration.checkinTableName + " (checkin_day)";
             db.executeStmt(sqlStmt);
+            sqlStmt = "CREATE INDEX business_index_on_cities ON " + Configuration.businessTableName + " (city)";
+            db.executeStmt(sqlStmt);
+            sqlStmt = "CREATE INDEX business_index_on_categories ON " + Configuration.businessTableName + " (category)";
+            db.executeStmt(sqlStmt);
+            
             sqlStmt = "CREATE EXTENSION cube";
             db.executeStmt(sqlStmt);
             sqlStmt = "CREATE EXTENSION earthdistance";

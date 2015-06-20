@@ -3,6 +3,8 @@ package yelp;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import org.json.simple.parser.ParseException;
 
 /**
@@ -16,7 +18,7 @@ public class Main {
     
     public static void main(String[] args) throws SQLException, IOException, FileNotFoundException, ParseException{
         
-        int choice = Integer.parseInt(args[0]);
+        int choice = 0;
 //        String businessId = args[1];
 //        int checkInDay = Integer.parseInt(args[2]);
 //        int checkInHour = Integer.parseInt(args[3]);
@@ -30,7 +32,11 @@ public class Main {
 //        } else {
 //            hops = 3;
 //        }
-        Query.makeQuery(3, 36.1305306, -115.2072382, 4000, 2, 14, 1);
+        List<String> categories = new ArrayList<>();
+        categories.add("Restaurants");
+        categories.add("Food");
+        categories.add("Health & Medical");
+        Query.makeQuery(3, 36.1305306, -115.2072382, 4000, 2, 14, 1, categories);
         if(choice == 0) {
 //            Clustering clus = new Clustering();
 //            clus.getParentClustersFromJSON();
