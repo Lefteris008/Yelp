@@ -59,15 +59,15 @@ public class DBHandling {
         
         //Create a table with the ID of the business, its geolocation, name, stars and custom category
         sql = "CREATE TABLE IF NOT EXISTS " + Configuration.businessTableName
-                + "(ID char(100) PRIMARY KEY     NOT NULL," + " latitude  double precision  NOT NULL, "
-                + " longitude double precision NOT NULL, " + " business_name char(100), "
-                + " stars double precision, " + " full_address char(200), " + "city char(30), " + "category char(100)) ";
+                + "(ID varchar(100) PRIMARY KEY     NOT NULL," + " latitude  double precision  NOT NULL, "
+                + " longitude double precision NOT NULL, " + " business_name varchar(100), "
+                + " stars double precision, " + " full_address varchar(200), " + "city varchar(100), " + "category varchar(100)) ";
         stmt.executeUpdate(sql);
 
         System.out.println("Successfully created table " + Configuration.businessTableName);
 
         sql = "CREATE TABLE IF NOT EXISTS " + Configuration.checkinTableName
-                + "(ID  SERIAL PRIMARY KEY, business_id char(30)," + " checkin_day int, " + "checkin_time int, " + " checkin_count int NOT NULL) ";
+                + "(ID  SERIAL PRIMARY KEY, business_id varchar(100)," + " checkin_day int, " + "checkin_time int, " + " checkin_count int NOT NULL) ";
         stmt.executeUpdate(sql);
 
         System.out.println("Successfully created table " + Configuration.checkinTableName);
