@@ -32,7 +32,7 @@ public class Main {
 //        } else {
 //            hops = 3;
 //        }
-        List<String> categories = new ArrayList<>();
+        ArrayList<String> categories = new ArrayList<>();
         categories.add("Restaurants");
         categories.add("Food");
         categories.add("Health & Medical");
