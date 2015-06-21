@@ -73,7 +73,7 @@ public class DBHandling {
         System.out.println("Successfully created table " + Configuration.checkinTableName);
 
         sql = "CREATE TABLE IF NOT EXISTS " + Configuration.userTableName
-                + "(ID  SERIAL PRIMARY KEY, user_id char(100), first_choice char(100), second_choice char(100), third_choice char(100)) ";
+                + "(ID  SERIAL PRIMARY KEY, user_id varchar(100), first_choice varchar(100), second_choice varchar(100), third_choice varchar(100)) ";
         stmt.executeUpdate(sql);
 
         System.out.println("Successfully created table " + Configuration.userTableName);
