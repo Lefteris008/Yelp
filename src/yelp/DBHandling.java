@@ -59,8 +59,8 @@ public class DBHandling {
         
         //Create a table with the ID of the business, its geolocation, name, stars and custom category
         sql = "CREATE TABLE IF NOT EXISTS " + Configuration.businessTableName
-                + "(ID char(30) PRIMARY KEY     NOT NULL," + " latitude  double precision  NOT NULL, "
-                + " longitude double precision NOT NULL, " + " business_name char(50), "
+                + "(ID char(100) PRIMARY KEY     NOT NULL," + " latitude  double precision  NOT NULL, "
+                + " longitude double precision NOT NULL, " + " business_name char(100), "
                 + " stars double precision, " + " full_address char(200), " + "city char(30), " + "category char(100)) ";
         stmt.executeUpdate(sql);
 
