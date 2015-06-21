@@ -143,9 +143,9 @@ public class GetData {
             sqlStmt = "CREATE INDEX business_index_on_categories ON " + Configuration.businessTableName + " (category)";
             db.executeStmt(sqlStmt);
             
-            sqlStmt = "CREATE EXTENSION cube";
+            sqlStmt = "CREATE EXTENSION IF NOT EXISTS cube";
             db.executeStmt(sqlStmt);
-            sqlStmt = "CREATE EXTENSION earthdistance";
+            sqlStmt = "CREATE EXTENSION IF NOT EXISTS earthdistance";
             db.executeStmt(sqlStmt);
         } catch (IOException e) {
             e.printStackTrace();
