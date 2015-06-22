@@ -2,17 +2,17 @@ package yelp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
  *
  * @author  Paraskevas Eleftherios
- * @version 2015.06.23_0017
+ * @version 2015.06.23_0051
  */
 public class JSON {
     
     public static String createJSONResultString(HashMap finalResults) {
+        
         // Key are the number of hop and value is an ArrayList with all businesses in the specific hop
         ArrayList<ArrayList<String>> resultsOfHop;
         String businessId, businessName, businessLat, businessLon, businessAddress, businessStars, businessCity, businessCategory;
