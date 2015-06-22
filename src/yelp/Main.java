@@ -4,45 +4,39 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 import org.json.simple.parser.ParseException;
+import scala.actors.threadpool.Arrays;
 
 /**
  *
- * @author  Paraskevas Eleftherios (585)
- * @author  Pliakis Nikolaos (589)
- * @author  Tzanakas Alexandros (597)
- * @version 2015.6.16.1640
+ * @author  Paraskevas Eleftherios
+ * @author  Tzanakas Alexandros
+ * @version 2015.6.23.0113
  */
 public class Main {
     
     public static void main(String[] args) throws SQLException, IOException, FileNotFoundException, ParseException{
         
-        int choice = 0;
-//        String businessId = args[1];
-//        int checkInDay = Integer.parseInt(args[2]);
-//        int checkInHour = Integer.parseInt(args[3]);
-//        int hops;
-//        String[] categories = null;
-//        if(args.length > 4) {
-//            hops = Integer.parseInt(args[4]);
-//            if(choice == 2) {
-//                categories = args[5].split("/");
-//            }
-//        } else {
-//            hops = 3;
-//        }
-        ArrayList<String> categories = new ArrayList<>();
-        categories.add("Restaurants");
-        categories.add("Food");
-        categories.add("Health & Medical");
-        Query.makeQuery(3, 36.1305306, -115.2072382, 4000, 2, 14, 1, categories);
+        int choice = Integer.parseInt(args[0]);
+        double lat = Double.parseDouble(args[1]);
+        double lon = Double.parseDouble(args[2]);
+        int radius = Integer.parseInt(args[3]);
+        int checkInDay = Integer.parseInt(args[4]);
+        int checkInHour = Integer.parseInt(args[5]);
+        int interval = Integer.parseInt(args[6]);
+        int hops = Integer.parseInt(args[7]);
+        String[] categories = null;
+        if(args.length > 8) {
+            if(choice == 1) {
+                categories = args[5].split("_");
+            }
+        }
         if(choice == 0) {
-//            Clustering clus = new Clustering();
-//            clus.getParentClustersFromJSON();
-//            GetData.storeData(clus);
+            Clustering clus = new Clustering();
+            clus.getParentClustersFromJSON();
+            GetData.storeData(clus);
         } else {
-        //    GetData.getDataFromDBs(businessId, checkInDay, checkInHour, hops, choice, categories);
+            Query.makeQuery(hops, lat, lon, radius, checkInDay, checkInHour, interval, new ArrayList(Arrays.asList(categories)));
         }
     }
 }
