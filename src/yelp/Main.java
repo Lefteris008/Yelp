@@ -39,16 +39,16 @@ public class Main {
             if(choice == 1) {
                 categories = args[8].split(">");
                 categories = trimUnderscores(categories);
-            } else if(choice == 2) {
-                categories = null;
             }
         }
         if(choice == 0) {
             Clustering clus = new Clustering();
             clus.getParentClustersFromJSON();
             GetData.storeData(clus);
+        } else if(choice==1){
+            Query.makeQuery(hops, lat, lon, radius, checkInDay, checkInHour, interval, new ArrayList<>(Arrays.asList(categories)));
         } else {
-            Query.makeQuery(hops, lat, lon, radius, checkInDay, checkInHour, interval, new ArrayList(Arrays.asList(categories)));
+            Query.makeQuery(hops, lat, lon, radius, checkInDay, checkInHour, interval, new ArrayList<>());
         }
     }
 }
