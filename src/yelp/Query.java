@@ -1,32 +1,26 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package yelp;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  *
- * @author Alex
+ * @author  Tzanakas Alexandros
+ * @version 2015.06.23_0049
  */
 public class Query {
 
-    private static HashMap distinct = new HashMap();
+    private static final HashMap distinct = new HashMap();
 
     public static void makeQuery(int hops, double latitude, double longitude, int radius, int day, int time, int interval, ArrayList categories) throws SQLException {
         int hop = 1;
         HashMap finalResults = new HashMap();
         DBHandling db = new DBHandling();
-        ArrayList results = new ArrayList();
+        ArrayList results;
         ArrayList resultsHops = new ArrayList();
         ArrayList list = new ArrayList();
-        ArrayList aux = new ArrayList();
+        ArrayList aux;
         ArrayList finalList = new ArrayList();
         list.add(Float.toString((float) latitude));
         list.add(Float.toString((float) longitude));
@@ -41,8 +35,8 @@ public class Query {
             list.add("\n");
         }
         results = db.executeStmtWithResults(stringQuery(list));
-        for (int i = 0; i < results.size(); i++) {
-            aux = (ArrayList) results.get(i);
+        for (Object result : results) {
+            aux = (ArrayList) result;
             distinct.put(aux.get(0), hop);
             finalList.add(aux);
             finalResults.put(hop, finalList);
@@ -67,6 +61,9 @@ public class Query {
                     list.set(7, "\n");
                 }
                 aux = db.executeStmtWithResults(stringQuery(list));
+                if(aux.isEmpty()) { //No POIs are returned
+                    continue;
+                }
                 aux = containsKey(aux);
                 resultsHops.add(aux.get(0));
             }
@@ -83,10 +80,7 @@ public class Query {
             // Clear the auxiliary arraylist
             resultsHops.clear();
         }
-        // Key are the number of hop and value is an ArrayList with all businesses in the specific hop
-        for (Object c : finalResults.keySet()) {
-            System.out.println(finalResults.get(c) + " " + c);
-        }
+        JSON.createJSONResultString(finalResults);
     }
 
     private static String stringQuery(ArrayList list) {

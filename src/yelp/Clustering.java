@@ -13,15 +13,13 @@ import org.json.simple.parser.ParseException;
 
 /**
  *
- * @author  Paraskevas Eleftherios (585)
- * @author  Pliakis Nikolaos (589)
- * @author  Tzanakas Alexandros (597)
- * @version 2015.06.16_1640
+ * @author  Paraskevas Eleftherios
+ * @version 2015.06.23_0004
  */
 
 public class Clustering {
     
-    private static Set<String> parentClusters = new HashSet<>();
+    private static final Set<String> parentClusters = new HashSet<>();
     
     public Clustering() {
         ///
@@ -47,7 +45,6 @@ public class Clustering {
                     parentClusters.add(title); //The title is a parent category, store it
                 }
             } catch(ParserException e) {
-                e.printStackTrace();
                 return false;
             }
         }

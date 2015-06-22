@@ -13,10 +13,9 @@ import org.json.simple.parser.ParseException;
 
 /**
  *
- * @author  Paraskevas Eleftherios (585)
- * @author  Pliakis Nikolaos (589)
- * @author  Tzanakas Alexandros (597)
- * @version 2015.06.16_1640
+ * @author  Paraskevas Eleftherios
+ * @author  Tzanakas Alexandros
+ * @version 2015.06.23_0016
  */
 public class GetData {
     
@@ -31,30 +30,12 @@ public class GetData {
         return cleanString;
     }
     
-    public static void getDataFromDBs(String businessId, int checkInDay, int checkInHour, int hops, int choice, String[] categories) {
-        DBHandling db = new DBHandling();
-        
-        double latitude;
-        double longitude;
-        String city;
-        String category;
-        String stmt =   "SELECT latitude, longitude, business_name, stars, full_address, city, category" +
-                        "FROM " + Configuration.businessTableName + 
-                        "WHERE id = " + businessId;
-        //TODO
-        //Create method to execute SQL query and return results
-        //Execute the statement
-        //Store the variables
-        if(choice == 1) { //Automatic mode, return everything
-            //stmt = 
-        } else if(choice == 2) { //Manual mode, the user has supplied a chain
-            
-        } else {    //choice == 3, Semi-manual mode, get the preferences of the user
-                    //from the USER_INFO table
-            
-        }
-    }
-    
+    /*
+    *   Stores data into the two main tables of the DB
+    *   Data are extracted from the business and check in
+    *   JSON files and are stored into the BUSINESS_LOCATION
+    *   and CHECKIN_INFO tables respectively
+    */
     public static void storeData(Clustering clus) throws SQLException {
 
         BufferedReader br1 = null;
@@ -93,7 +74,7 @@ public class GetData {
                     }
                     checkInCount.put(businessID, sum);
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    ///
                 }
             }
             System.out.println("Successfully filled table " + Configuration.checkinTableName);
@@ -130,7 +111,7 @@ public class GetData {
                             + "VALUES ('" + businessId + "'," + latitude + ", " + longitude + ", '" + businessName + "', " + stars + ", '" + businessAddress + "', '" + city + "', '" + customCategory + "');";
                     db.executeStmt(sqlStmt);
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    ///
                 }
             }
             System.out.println("Successfully filled table " + Configuration.businessTableName);
@@ -148,7 +129,7 @@ public class GetData {
             sqlStmt = "CREATE EXTENSION IF NOT EXISTS earthdistance";
             db.executeStmt(sqlStmt);
         } catch (IOException e) {
-            e.printStackTrace();
+            ///
         } finally {
             try {
                 if (br1 != null) {
@@ -158,12 +139,16 @@ public class GetData {
                     br2.close();
                 }
                 db.closeDB();
-            } catch (IOException ex) {
-                ex.printStackTrace();
+            } catch (IOException e) {
+                ///
             }
         }
     }
     
+    /*
+    *   Check whether the business has at least 100
+    *   check ins and if not, return false (filter it out)
+    */
     public static boolean isFilteredOut(String businessId) {
         if(checkInCount.containsKey(businessId)) {
             if(checkInCount.get(businessId) >= 100) {

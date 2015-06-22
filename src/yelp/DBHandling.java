@@ -6,17 +6,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  *
- * @author  Paraskevas Eleftherios (585)
- * @author  Pliakis Nikolaos (589)
- * @author  Tzanakas Alexandros (597)
- * @version 2015.06.16_1640
+ * @author  Tzanakas Alexandros
+ * @author  Paraskevas Eleftherios
+ * @version 2015.06.23_0011
  */
 
-public class DBHandling {
+public final class DBHandling {
 
     Connection conn;
 
@@ -38,10 +36,10 @@ public class DBHandling {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
-        System.out.println("Opened database successfully");
+        System.out.println("Database was opened successfully");
         return c;
     }
-
+    
     public void createTables() throws SQLException {
         Statement stmt = null;
         stmt = conn.createStatement();
@@ -52,10 +50,6 @@ public class DBHandling {
         
         sql = "DROP TABLE IF EXISTS " + Configuration.checkinTableName;
         stmt.executeUpdate(sql);
-        
-        sql = "DROP TABLE IF EXISTS " + Configuration.userTableName;
-        stmt.executeUpdate(sql);
-        
         
         //Create a table with the ID of the business, its geolocation, name, stars and custom category
         sql = "CREATE TABLE IF NOT EXISTS " + Configuration.businessTableName
@@ -71,12 +65,7 @@ public class DBHandling {
         stmt.executeUpdate(sql);
 
         System.out.println("Successfully created table " + Configuration.checkinTableName);
-
-        sql = "CREATE TABLE IF NOT EXISTS " + Configuration.userTableName
-                + "(ID  SERIAL PRIMARY KEY, user_id varchar(100), first_choice varchar(100), second_choice varchar(100), third_choice varchar(100)) ";
-        stmt.executeUpdate(sql);
-
-        System.out.println("Successfully created table " + Configuration.userTableName);
+        
         stmt.close();
     }
 
