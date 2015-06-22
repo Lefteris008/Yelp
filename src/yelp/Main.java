@@ -4,8 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import org.json.simple.parser.ParseException;
-import scala.actors.threadpool.Arrays;
 
 /**
  *
@@ -14,6 +14,15 @@ import scala.actors.threadpool.Arrays;
  * @version 2015.6.23.0113
  */
 public class Main {
+    
+    private static String[] trimUnderscores(String[] categories) {
+        int i = 0;
+        for (String category : categories) {
+            categories[i] = category.replaceAll("_", " ");
+            i++;
+        }
+        return categories;
+    }
     
     public static void main(String[] args) throws SQLException, IOException, FileNotFoundException, ParseException{
         
@@ -28,7 +37,8 @@ public class Main {
         String[] categories = null;
         if(args.length > 8) {
             if(choice == 1) {
-                categories = args[5].split("_");
+                categories = args[5].split("+");
+                categories = trimUnderscores(categories);
             }
         }
         if(choice == 0) {
