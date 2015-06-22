@@ -80,7 +80,7 @@ public class Query {
             // Clear the auxiliary arraylist
             resultsHops.clear();
         }
-        JSON.createJSONResultString(finalResults);
+        System.out.println(JSON.createJSONResultString(finalResults));
     }
 
     private static String stringQuery(ArrayList list) {

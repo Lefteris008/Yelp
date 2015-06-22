@@ -37,8 +37,10 @@ public class Main {
         String[] categories = null;
         if(args.length > 8) {
             if(choice == 1) {
-                categories = args[5].split("+");
+                categories = args[8].split(">");
                 categories = trimUnderscores(categories);
+            } else if(choice == 2) {
+                categories = null;
             }
         }
         if(choice == 0) {
