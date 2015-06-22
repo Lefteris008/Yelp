@@ -91,7 +91,7 @@ public class Query {
 
     private static String stringQuery(ArrayList list) {
         String sqlStmt;
-        sqlStmt = sqlStmt = "SELECT business_id, checkin_day, checkin_time, checkin_count, business_location.business_name, business_location.latitude, business_location.longitude, business_location.stars, difference\n"
+        sqlStmt =  "SELECT business_id, checkin_day, checkin_time, checkin_count, business_location.business_name, business_location.latitude, business_location.longitude, business_location.stars, difference\n"
                 + "FROM business_location\n"
                 + "INNER JOIN\n"
                 + "	(SELECT b.business_id, b.checkin_day, b.checkin_time, b.checkin_count, b.checkin_count - t.checkin_count AS difference\n"
