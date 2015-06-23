@@ -7,16 +7,23 @@ import java.util.HashMap;
 /**
  *
  * @author  Tzanakas Alexandros
- * @version 2015.06.23_0049
+ * @author  Paraskevas Eleftherios
+ * @version 2015.06.24_0107
  */
 public class Query {
 
     private static final HashMap distinct = new HashMap();
 
-    public static void makeQuery(int hops, double latitude, double longitude, int radius, int day, int time, int interval, ArrayList categories) throws SQLException {
+    /*
+    *   Input:  The variables needed for the query
+    *   Output: The JSON as a string, 0 for no retry or 1 for retry and the
+    *           total time of the execution of the query in milliseconds
+    */
+    public static String makeQuery(int hops, double latitude, double longitude, int radius, int day, int time, int interval, ArrayList categories, int retry, Configuration conf) throws SQLException {
         int hop = 1;
+        int missedTries = 0;
         HashMap finalResults = new HashMap();
-        DBHandling db = new DBHandling();
+        DBHandling db = new DBHandling(conf);
         ArrayList results;
         ArrayList resultsHops = new ArrayList();
         ArrayList list = new ArrayList();
@@ -34,7 +41,8 @@ public class Query {
         } else {
             list.add("\n");
         }
-        results = db.executeStmtWithResults(stringQuery(list));
+        double startTime = System.currentTimeMillis();
+        results = db.executeStmtWithResults(stringQuery(list, conf));
         for (Object result : results) {
             aux = (ArrayList) result;
             distinct.put(aux.get(0), hop);
@@ -60,8 +68,13 @@ public class Query {
                 } else {
                     list.set(7, "\n");
                 }
-                aux = db.executeStmtWithResults(stringQuery(list));
+                aux = db.executeStmtWithResults(stringQuery(list, conf));
                 if(aux.isEmpty()) { //No POIs are returned
+                    missedTries++;
+                    if(missedTries > (hops * hops / 2)) {
+                        db.closeDB();
+                        return null;
+                    }
                     continue;
                 }
                 aux = containsKey(aux);
@@ -80,30 +93,33 @@ public class Query {
             // Clear the auxiliary arraylist
             resultsHops.clear();
         }
-        System.out.println(JSON.createJSONResultString(finalResults));
+        double endTime = System.currentTimeMillis();
+        db.closeDB();
+        
+        return JSON.createJSONResultString(finalResults) + " " + retry + " " + (endTime - startTime);
     }
 
-    private static String stringQuery(ArrayList list) {
+    private static String stringQuery(ArrayList list, Configuration conf) {
         String sqlStmt;
-        sqlStmt = "SELECT business_id, checkin_day, checkin_time, checkin_count, business_location.business_name, business_location.latitude, business_location.longitude, business_location.stars, difference\n"
-                + "FROM business_location\n"
+        sqlStmt = "SELECT business_id, checkin_day, checkin_time, checkin_count, " + conf.businessTableName + ".business_name, " + conf.businessTableName + ".latitude, " + conf.businessTableName + ".longitude, " + conf.businessTableName + ".stars, difference\n"
+                + "FROM " + conf.businessTableName + "\n"
                 + "INNER JOIN\n"
                 + "	(SELECT b.business_id, b.checkin_day, b.checkin_time, b.checkin_count, b.checkin_count - t.checkin_count AS difference\n"
                 + "	FROM (  SELECT *\n"
-                + "		FROM checkin_info\n"
+                + "		FROM " + conf.checkinTableName + "\n"
                 + "		WHERE checkin_time = " + list.get(5) + " AND checkin_day = " + list.get(3) + ") b\n"
                 + "	INNER JOIN (SELECT *\n"
-                + "		    FROM checkin_info\n"
+                + "		    FROM " + conf.checkinTableName + "\n"
                 + "		    WHERE checkin_time = " + list.get(4) + " AND checkin_day = " + list.get(3) + ") AS t\n"
                 + "		ON t.business_id = b.business_id\n"
                 + "	WHERE  b.business_id IN (\n"
-                + "		SELECT business_location.id \n"
-                + "		FROM business_location\n"
+                + "		SELECT " + conf.businessTableName + ".id \n"
+                + "		FROM " + conf.businessTableName + "\n"
                 + "		WHERE earth_box(ll_to_earth(" + list.get(0) + "," + list.get(1)
                 + ")," + list.get(2) + "/1.609) @> ll_to_earth(latitude, longitude)\n"
                 + "		ORDER by earth_distance(ll_to_earth(" + list.get(0) + "," + list.get(1)
                 + "), ll_to_earth(latitude, longitude)), stars DESC)\n"
-                + "	ORDER BY difference DESC) x ON x.business_id = business_location.id "
+                + "	ORDER BY difference DESC) x ON x.business_id = " + conf.businessTableName + ".id "
                 + list.get(7)
                 + "LIMIT " + list.get(6) + " \n ";
         return sqlStmt;

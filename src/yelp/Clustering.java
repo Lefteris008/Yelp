@@ -14,7 +14,8 @@ import org.json.simple.parser.ParseException;
 /**
  *
  * @author  Paraskevas Eleftherios
- * @version 2015.06.23_0004
+ * @author  Tzanakas Alexandros
+ * @version 2015.06.24_0108
  */
 
 public class Clustering {
@@ -25,11 +26,11 @@ public class Clustering {
         ///
     }
     
-    public boolean getParentClustersFromJSON() throws FileNotFoundException, IOException, ParseException {
+    public boolean getParentClustersFromJSON(Configuration conf) throws FileNotFoundException, IOException, ParseException {
         BufferedReader br;
         JSONParser parser = new JSONParser();
         String sCurrentLine;
-        br = new BufferedReader(new FileReader(Configuration.categories2FilePath));
+        br = new BufferedReader(new FileReader(conf.categoriesFilePath));
         while ((sCurrentLine = br.readLine()) != null) {
             Object obj;
             String parent, title;
@@ -67,11 +68,11 @@ public class Clustering {
         return parentClusters.contains(category);
     }
     
-    public static int returnTotalNumberOfParentClusters() {
+    public int returnTotalNumberOfParentClusters() {
         return parentClusters.size();
     }
     
-    public static void printParentClusters() {
+    public void printParentClusters() {
         parentClusters.stream().forEach((cat) -> {
             System.out.println(cat);
         });

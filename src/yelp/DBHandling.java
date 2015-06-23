@@ -11,27 +11,28 @@ import java.util.ArrayList;
  *
  * @author  Tzanakas Alexandros
  * @author  Paraskevas Eleftherios
- * @version 2015.06.23_0011
+ * @version 2015.06.24_0106
  */
 
 public final class DBHandling {
 
     Connection conn;
 
-    public DBHandling() {
-        conn = dbConnection();
+    public DBHandling(Configuration conf) {
+        conn = dbConnection(conf);
     }
 
     public void closeDB() throws SQLException {
+        System.out.println("Database was closed successfully");
         conn.close();
     }
 
-    public Connection dbConnection() {
+    public Connection dbConnection(Configuration conf) {
         Connection c = null;
         try {
             Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection(Configuration.postgresConn,
-                    Configuration.dbName, Configuration.dbPassword);
+            c = DriverManager.getConnection(conf.postgresConn,
+                    conf.dbName, conf.dbPassword);
         } catch (ClassNotFoundException | SQLException e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
@@ -40,31 +41,31 @@ public final class DBHandling {
         return c;
     }
     
-    public void createTables() throws SQLException {
+    public void createTables(Configuration conf) throws SQLException {
         Statement stmt = null;
         stmt = conn.createStatement();
         String sql;
         
-        sql = "DROP TABLE IF EXISTS " + Configuration.businessTableName;
+        sql = "DROP TABLE IF EXISTS " + conf.businessTableName;
         stmt.executeUpdate(sql);
         
-        sql = "DROP TABLE IF EXISTS " + Configuration.checkinTableName;
+        sql = "DROP TABLE IF EXISTS " + conf.checkinTableName;
         stmt.executeUpdate(sql);
         
         //Create a table with the ID of the business, its geolocation, name, stars and custom category
-        sql = "CREATE TABLE IF NOT EXISTS " + Configuration.businessTableName
+        sql = "CREATE TABLE IF NOT EXISTS " + conf.businessTableName
                 + "(ID varchar(100) PRIMARY KEY     NOT NULL," + " latitude  double precision  NOT NULL, "
                 + " longitude double precision NOT NULL, " + " business_name varchar(100), "
                 + " stars double precision, " + " full_address varchar(200), " + "city varchar(100), " + "category varchar(100)) ";
         stmt.executeUpdate(sql);
 
-        System.out.println("Successfully created table " + Configuration.businessTableName);
+        System.out.println("Successfully created table " + conf.businessTableName);
 
-        sql = "CREATE TABLE IF NOT EXISTS " + Configuration.checkinTableName
+        sql = "CREATE TABLE IF NOT EXISTS " + conf.checkinTableName
                 + "(ID  SERIAL PRIMARY KEY, business_id varchar(100)," + " checkin_day int, " + "checkin_time int, " + " checkin_count int NOT NULL) ";
         stmt.executeUpdate(sql);
 
-        System.out.println("Successfully created table " + Configuration.checkinTableName);
+        System.out.println("Successfully created table " + conf.checkinTableName);
         
         stmt.close();
     }

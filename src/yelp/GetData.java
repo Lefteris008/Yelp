@@ -13,9 +13,9 @@ import org.json.simple.parser.ParseException;
 
 /**
  *
- * @author  Paraskevas Eleftherios
  * @author  Tzanakas Alexandros
- * @version 2015.06.23_0016
+ * @author  Paraskevas Eleftherios
+ * @version 2015.06.24_0107
  */
 public class GetData {
     
@@ -36,23 +36,23 @@ public class GetData {
     *   JSON files and are stored into the BUSINESS_LOCATION
     *   and CHECKIN_INFO tables respectively
     */
-    public static void storeData(Clustering clus) throws SQLException {
+    public static void storeData(Clustering clus, Configuration conf) throws SQLException {
 
         BufferedReader br1 = null;
         BufferedReader br2 = null;
         JSONParser parser = new JSONParser();
-        DBHandling db = new DBHandling();
-        db.createTables();
+        DBHandling db = new DBHandling(conf);
+        db.createTables(conf);
         try {
 
             String sCurrentLine, sqlStmt;
 
-            br1 = new BufferedReader(new FileReader(Configuration.businessFilePath));
-            br2 = new BufferedReader(new FileReader(Configuration.checkinFilePath));
+            br1 = new BufferedReader(new FileReader(conf.businessFilePath));
+            br2 = new BufferedReader(new FileReader(conf.checkinFilePath));
 
-            br2 = new BufferedReader(new FileReader(Configuration.checkinFilePath));
+            br2 = new BufferedReader(new FileReader(conf.checkinFilePath));
             
-            System.out.println("Started filling table " + Configuration.checkinTableName);
+            System.out.println("Started filling table " + conf.checkinTableName);
             while ((sCurrentLine = br2.readLine()) != null) {
                 Object obj;
                 int sum;
@@ -68,7 +68,7 @@ public class GetData {
                         time = key.toString().substring(0, key.toString().indexOf("-"));
                         String count = (String) checkinInfo.get(key).toString();
                         sum += Integer.parseInt(count);
-                        sqlStmt = "INSERT INTO " + Configuration.checkinTableName + " (business_id, checkin_day, checkin_time, checkin_count) "
+                        sqlStmt = "INSERT INTO " + conf.checkinTableName + " (business_id, checkin_day, checkin_time, checkin_count) "
                                 + "VALUES ('" + businessID + "'," + day + ", " + time + "," + count + ");";
                         db.executeStmt(sqlStmt);
                     }
@@ -77,9 +77,9 @@ public class GetData {
                     ///
                 }
             }
-            System.out.println("Successfully filled table " + Configuration.checkinTableName);
+            System.out.println("Successfully filled table " + conf.checkinTableName);
             
-            System.out.println("Started filling table " + Configuration.businessTableName);
+            System.out.println("Started filling table " + conf.businessTableName);
             while ((sCurrentLine = br1.readLine()) != null) {
 
                 Object obj;
@@ -107,21 +107,21 @@ public class GetData {
                             break;
                         }
                     }
-                    sqlStmt = "INSERT INTO " + Configuration.businessTableName + " (id,latitude,longitude,business_name,stars,full_address,city,category) "
+                    sqlStmt = "INSERT INTO " + conf.businessTableName + " (id,latitude,longitude,business_name,stars,full_address,city,category) "
                             + "VALUES ('" + businessId + "'," + latitude + ", " + longitude + ", '" + businessName + "', " + stars + ", '" + businessAddress + "', '" + city + "', '" + customCategory + "');";
                     db.executeStmt(sqlStmt);
                 } catch (ParseException e) {
                     ///
                 }
             }
-            System.out.println("Successfully filled table " + Configuration.businessTableName);
-            sqlStmt = "CREATE INDEX checkin_index_on_time ON " + Configuration.checkinTableName + " (checkin_time)";
+            System.out.println("Successfully filled table " + conf.businessTableName);
+            sqlStmt = "CREATE INDEX checkin_index_on_time ON " + conf.checkinTableName + " (checkin_time)";
             db.executeStmt(sqlStmt);
-            sqlStmt = "CREATE INDEX checkin_index_on_day ON " + Configuration.checkinTableName + " (checkin_day)";
+            sqlStmt = "CREATE INDEX checkin_index_on_day ON " + conf.checkinTableName + " (checkin_day)";
             db.executeStmt(sqlStmt);
-            sqlStmt = "CREATE INDEX business_index_on_cities ON " + Configuration.businessTableName + " (city)";
+            sqlStmt = "CREATE INDEX business_index_on_cities ON " + conf.businessTableName + " (city)";
             db.executeStmt(sqlStmt);
-            sqlStmt = "CREATE INDEX business_index_on_categories ON " + Configuration.businessTableName + " (category)";
+            sqlStmt = "CREATE INDEX business_index_on_categories ON " + conf.businessTableName + " (category)";
             db.executeStmt(sqlStmt);
             
             sqlStmt = "CREATE EXTENSION IF NOT EXISTS cube";

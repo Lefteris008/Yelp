@@ -11,7 +11,7 @@ import org.json.simple.parser.ParseException;
  *
  * @author  Paraskevas Eleftherios
  * @author  Tzanakas Alexandros
- * @version 2015.6.23.0113
+ * @version 2015.6.24.0107
  */
 public class Main {
     
@@ -35,20 +35,32 @@ public class Main {
         int interval = Integer.parseInt(args[6]);
         int hops = Integer.parseInt(args[7]);
         String[] categories = null;
+        String jsonToPHP = "";
         if(args.length > 8) {
             if(choice == 1) {
                 categories = args[8].split(">");
                 categories = trimUnderscores(categories);
             }
         }
+        
+        Configuration conf = new Configuration();
+        conf.getPropertyValues();
+        
         if(choice == 0) {
             Clustering clus = new Clustering();
-            clus.getParentClustersFromJSON();
-            GetData.storeData(clus);
+            clus.getParentClustersFromJSON(conf);
+            GetData.storeData(clus, conf);
         } else if(choice==1){
-            Query.makeQuery(hops, lat, lon, radius, checkInDay, checkInHour, interval, new ArrayList<>(Arrays.asList(categories)));
+            jsonToPHP = Query.makeQuery(hops, lat, lon, radius, checkInDay, checkInHour, interval, new ArrayList<>(Arrays.asList(categories)), 0, conf);
+            
+            //In case that the query failed to fetch enough results
+            //run the query again, without the categories
+            if(jsonToPHP == null) {
+                jsonToPHP = Query.makeQuery(hops, lat, lon, radius, checkInDay, checkInHour, interval, new ArrayList<>(), 1, conf);
+            }
         } else {
-            Query.makeQuery(hops, lat, lon, radius, checkInDay, checkInHour, interval, new ArrayList<>());
+            jsonToPHP = Query.makeQuery(hops, lat, lon, radius, checkInDay, checkInHour, interval, new ArrayList<>(), 0, conf);
         }
+        System.out.println(jsonToPHP);
     }
 }
