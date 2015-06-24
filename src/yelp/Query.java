@@ -51,9 +51,9 @@ public class Query {
         results = db.executeStmtWithResults(stringQueryTempTable(list, conf));
         for (Object result : results) {
             aux = (ArrayList) result;
-            distinct.put(aux.get(0), hop);
             finalList.add(aux);
             finalResults.put(hop, finalList);
+            db.executeStmt("DELETE FROM "+tempTableName+" WHERE id= '"+aux.get(0)+"'");
         }
         for (int i = 1; i < hops; i++) {
             hop++;
@@ -85,6 +85,7 @@ public class Query {
                 }
                 aux = containsKey(aux);
                 resultsHops.add(aux.get(0));
+                db.executeStmt("DELETE FROM "+tempTableName+" WHERE id= '"+aux.get(0)+"'");
             }
             // For the next hop clear saved IDs. The user gets results that may have been excluded
 
