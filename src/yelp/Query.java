@@ -101,9 +101,6 @@ public class Query {
             resultsHops.clear();
         }
         double endTime = System.currentTimeMillis();
-        for(Object k:finalResults.keySet()){
-            System.out.println(finalResults.get(k));
-        }
         db.executeStmt("DROP TABLE "+ tempTableName);
         db.closeDB();
         return JSON.createJSONResultString(finalResults) + " " + retry + " " + (endTime - startTime);
