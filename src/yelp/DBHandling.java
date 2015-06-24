@@ -89,21 +89,21 @@ public final class DBHandling {
             ArrayList info = new ArrayList();
             // Get the ID of the business
             info.add(rs.getString(1));
-            // Get the name of the business
-            info.add(rs.getString(8));
             // Get Latitude and Longitude
-            info.add(rs.getString(9));
-            info.add(rs.getString(10));
+            info.add(rs.getString(2));
+            info.add(rs.getString(3));
+            // Get the name of the business
+            info.add(rs.getString(4));
             // Get stars
-            info.add(rs.getString(11));
+            info.add(rs.getString(5));
             // Get Address
-            info.add(rs.getString(12));
+            info.add(rs.getString(6));
             // Get City
-            info.add(rs.getString(13));
+            info.add(rs.getString(7));
             // Get category
-            info.add(rs.getString(14));
+            info.add(rs.getString(8));
             // Get difference in number of check-ins
-            info.add(rs.getString(15));
+            info.add(rs.getString(9));
             results.add(info);
         }
         return results;

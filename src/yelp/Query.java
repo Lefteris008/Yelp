@@ -119,7 +119,7 @@ public class Query {
     
     private static String stringQueryTempTable(ArrayList list, Configuration conf) {
         String sqlStmt = 
-                  "SELECT *,\n"
+                  "SELECT id, latitude, longitude, business_name, stars, full_address, city, category,\n"
                 + "       CASE WHEN lTime - checkin_time = 1 THEN lCount - checkin_count\n"
                 + "            ELSE NULL\n"
                 + "       END as difference \n"
