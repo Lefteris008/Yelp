@@ -28,13 +28,13 @@ public class JSON {
             for (ArrayList<String> b : resultsOfHop) {
                 businessCounter++;
                 businessId = b.get(0);
-                businessName = b.get(1);
+                businessLon = b.get(1);
                 businessLat = b.get(2);
-                businessLon = b.get(3);
-                businessAddress = "N/A";
+                businessName = b.get(3);
                 businessStars = b.get(4);
-                businessCity = "N/A";
-                businessCategory = "N/A";
+                businessAddress = b.get(5);
+                businessCity = b.get(6);
+                businessCategory = b.get(7);
                 
                 businessObj = new JSONObject();
                 businessObj.put("id", businessId);
