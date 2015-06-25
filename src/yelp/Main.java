@@ -38,7 +38,7 @@ public class Main {
         String jsonToPHP = "";
         if(args.length > 8) {
             if(choice == 1) {
-                categories = args[8].split(">");
+                categories = args[8].split("_");
                 categories = trimUnderscores(categories);
             }
         }
