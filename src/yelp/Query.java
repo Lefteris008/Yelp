@@ -21,9 +21,9 @@ public class Query {
     *   Output: The JSON as a string, 0 for no retry or 1 for retry and the
     *           total time of the execution of the query in milliseconds
     */
-    public static String makeQuery(int hops, double latitude, double longitude, int radius, int day, int time, int interval, ArrayList categories, int retry, Configuration conf) throws SQLException {
+    public static String makeQuery(int hops, double latitude, double longitude, int radius, int day, int time, int interval, ArrayList categories, Configuration conf) throws SQLException {
         int hop = 1;
-        int missedTries = 0;
+        int retry = 0;
         tempTableName = randomTempTableName();
         HashMap finalResults = new HashMap();
         DBHandling db = new DBHandling(conf);
@@ -76,12 +76,9 @@ public class Query {
                 }
                 aux = db.executeStmtWithResults(stringQueryTempTable(list, conf));
                 if(aux.isEmpty()) { //No POIs are returned
-                    missedTries++;
-                    if(missedTries > (hops * hops / 2)) {
-                        db.closeDB();
-                        return null;
-                    }
-                    continue;
+                    retry = 1;
+                    list.set(7, "\n");
+                    aux = db.executeStmtWithResults(stringQueryTempTable(list, conf));   
                 }
                 aux = containsKey(aux);
                 resultsHops.add(aux.get(0));

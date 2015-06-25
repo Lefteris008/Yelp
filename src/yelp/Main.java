@@ -51,15 +51,9 @@ public class Main {
             clus.getParentClustersFromJSON(conf);
             GetData.storeData(clus, conf);
         } else if(choice==1){
-            jsonToPHP = Query.makeQuery(hops, lat, lon, radius, checkInDay, checkInHour, interval, new ArrayList<>(Arrays.asList(categories)), 0, conf);
-            
-            //In case that the query failed to fetch enough results
-            //run the query again, without the categories
-            if(jsonToPHP == null) {
-                jsonToPHP = Query.makeQuery(hops, lat, lon, radius, checkInDay, checkInHour, interval, new ArrayList<>(), 1, conf);
-            }
+            jsonToPHP = Query.makeQuery(hops, lat, lon, radius, checkInDay, checkInHour, interval, new ArrayList<>(Arrays.asList(categories)), conf);
         } else {
-            jsonToPHP = Query.makeQuery(hops, lat, lon, radius, checkInDay, checkInHour, interval, new ArrayList<>(), 0, conf);
+            jsonToPHP = Query.makeQuery(hops, lat, lon, radius, checkInDay, checkInHour, interval, new ArrayList<>(), conf);
         }
         System.out.println(jsonToPHP);
     }
