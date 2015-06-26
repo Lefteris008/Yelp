@@ -8,7 +8,7 @@ import org.json.simple.JSONObject;
  *
  * @author  Paraskevas Eleftherios
  * @author  Tzanakas Alexandros
- * @version 2015.06.26_1851
+ * @version 2015.06.27_0006
  */
 public class JSON {
     

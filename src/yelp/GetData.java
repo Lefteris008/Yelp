@@ -15,11 +15,11 @@ import org.json.simple.parser.ParseException;
  *
  * @author  Tzanakas Alexandros
  * @author  Paraskevas Eleftherios
- * @version 2015.06.26_1817
+ * @version 2015.06.27_0011
  */
 public class GetData {
     
-    public static HashMap<String, Integer> checkInCount = new HashMap<>();
+    private static HashMap<String, Integer> checkInCount = new HashMap<>();
     
     /**
      * Cleans a string. Receives a string and drops all
@@ -61,8 +61,7 @@ public class GetData {
             br2 = new BufferedReader(new FileReader(conf.checkinFilePath));
 
             br2 = new BufferedReader(new FileReader(conf.checkinFilePath));
-            
-            System.out.println("Started filling table " + conf.checkinTableName);
+
             while ((sCurrentLine = br2.readLine()) != null) {
                 Object obj;
                 int sum;
@@ -87,9 +86,7 @@ public class GetData {
                     ///
                 }
             }
-            System.out.println("Successfully filled table " + conf.checkinTableName);
             
-            System.out.println("Started filling table " + conf.businessTableName);
             while ((sCurrentLine = br1.readLine()) != null) {
 
                 Object obj;
@@ -124,7 +121,7 @@ public class GetData {
                     ///
                 }
             }
-            System.out.println("Successfully filled table " + conf.businessTableName);
+            
             sqlStmt = "CREATE INDEX checkin_index_on_time ON " + conf.checkinTableName + " (checkin_time)";
             db.executeStmt(sqlStmt);
             sqlStmt = "CREATE INDEX checkin_index_on_day ON " + conf.checkinTableName + " (checkin_day)";

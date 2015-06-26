@@ -11,11 +11,11 @@ import java.util.ArrayList;
  *
  * @author Tzanakas Alexandros
  * @author Paraskevas Eleftherios
- * @version 2015.06.26_1938
+ * @version 2015.06.27_0009
  */
 public final class DBHandling {
 
-    Connection conn;
+    protected Connection conn;
 
     /**
      * Creates a handler of the 'postgres' database
@@ -30,7 +30,6 @@ public final class DBHandling {
      * @throws SQLException 
      */
     public void closeDB() throws SQLException {
-        System.out.println("Database was closed successfully");
         conn.close();
     }
 
@@ -49,7 +48,6 @@ public final class DBHandling {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
-        System.out.println("Database was opened successfully");
         return c;
     }
 
@@ -76,14 +74,10 @@ public final class DBHandling {
                 + " stars double precision, " + " full_address varchar(200), " + "city varchar(100), " + "category varchar(100)) ";
         stmt.executeUpdate(sql);
 
-        System.out.println("Successfully created table " + conf.businessTableName);
-
         sql = "CREATE TABLE IF NOT EXISTS " + conf.checkinTableName
                 + "(ID  SERIAL PRIMARY KEY, business_id varchar(100)," + " checkin_day int, " + "checkin_time int, " + " checkin_count int NOT NULL) ";
         stmt.executeUpdate(sql);
-
-        System.out.println("Successfully created table " + conf.checkinTableName);
-
+        
         stmt.close();
     }
 
@@ -118,26 +112,33 @@ public final class DBHandling {
         rs = st.executeQuery(sqlStatement);
         while (rs.next()) {
             ArrayList info = new ArrayList();
+            
             // Get the ID of the business
             info.add(rs.getString(1));
+            
             // Get Latitude and Longitude
             info.add(rs.getString(2));
             info.add(rs.getString(3));
+            
             // Get the name of the business
             info.add(rs.getString(4));
+            
             // Get stars
             info.add(rs.getString(5));
+            
             // Get Address
             info.add(rs.getString(6));
+            
             // Get City
             info.add(rs.getString(7));
+            
             // Get category
             info.add(rs.getString(8));
+            
             // Get difference in number of check-ins
             info.add(rs.getString(9));
             results.add(info);
         }
         return results;
     }
-
 }

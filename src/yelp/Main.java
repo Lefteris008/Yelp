@@ -11,15 +11,15 @@ import org.json.simple.parser.ParseException;
  *
  * @author  Paraskevas Eleftherios
  * @author  Tzanakas Alexandros
- * @version 2015.6.24.0107
+ * @version 2015.6.27.0002
  */
 public class Main {
     
     /**
-     * This method replaces the underscores with white space.
+     * This method replaces the underscores of a given string with white space.
      * @param categories A string array with the categories
      * supplied by the external application
-     * @return The string array with the underscores replaces 
+     * @return The string array with the underscores replaced 
      */
     private static String[] trimUnderscores(String[] categories) {
         int i = 0;
@@ -30,6 +30,16 @@ public class Main {
         return categories;
     }
     
+    /**
+     * The main method of the application. It gets the arguments
+     * supplied by the external PHP application and calls the required
+     * functions
+     * @param args A string array containing the parameters supplied by the PHP application
+     * @throws SQLException
+     * @throws IOException
+     * @throws FileNotFoundException
+     * @throws ParseException 
+     */
     public static void main(String[] args) throws SQLException, IOException, FileNotFoundException, ParseException{
         
         int choice = Integer.parseInt(args[0]);
@@ -58,8 +68,18 @@ public class Main {
             GetData.storeData(clus, conf);
         } else if(choice==1){
             jsonToPHP = Query.makeQuery(hops, lat, lon, radius, checkInDay, checkInHour, interval, new ArrayList<>(Arrays.asList(categories)), conf);
+            
+            //The method found no results
+            if(jsonToPHP == null) {
+                jsonToPHP = "null";
+            }
         } else {
             jsonToPHP = Query.makeQuery(hops, lat, lon, radius, checkInDay, checkInHour, interval, new ArrayList<>(), conf);
+            
+            //The method found no results
+            if(jsonToPHP == null) {
+                jsonToPHP = "null";
+            }
         }
         System.out.println(jsonToPHP);
     }

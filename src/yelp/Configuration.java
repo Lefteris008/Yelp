@@ -10,7 +10,7 @@ import java.util.Properties;
  *
  * @author  Paraskevas Eleftherios
  * @author  Tzanakas Alexandors
- * @version 2015.06.26_1853
+ * @version 2015.06.27_0008
  */
 public class  Configuration {
     

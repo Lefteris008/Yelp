@@ -9,7 +9,7 @@ import java.util.Random;
  *
  * @author  Tzanakas Alexandros
  * @author  Paraskevas Eleftherios
- * @version 2015.06.26_1850
+ * @version 2015.06.27_0005
  */
 public class Query {
 
@@ -65,6 +65,7 @@ public class Query {
             aux = (ArrayList) result;
             finalList.add(aux);
             finalResults.put(hop, finalList);
+            
             // Remove from table the row with the specific id so that there are no duplicates
             db.executeStmt("DELETE FROM "+tempTableName+" WHERE id= '"+aux.get(0)+"'");
         }
@@ -72,31 +73,49 @@ public class Query {
             hop++;
             time = time + interval;
             for (Object result : results) {
+                
                 // Change the parameters for the new query. aux has the info from previous results
                 aux = (ArrayList) result;
+                
                 // Set the longitude, latitude according to previous business
                 list.set(0, aux.get(2));
                 list.set(1, aux.get(3));
+                
                 // Change the time
                 list.set(4, time);
                 list.set(5, time + interval);
+                
                 if (!categories.isEmpty()) {
                     list.set(7, "AND category = '" + categories.get(i) + "' \n");
                 } else {
                     list.set(7, "\n");
                 }
                 aux = db.executeStmtWithResults(stringQueryCheckIn(list, conf));
+                
                 if(aux.isEmpty()) { //No POIs are returned
                     retry = 1;
                     list.set(7, "\n");
+                    
+                    //Re-execute the query without categories
                     aux = db.executeStmtWithResults(stringQueryCheckIn(list, conf));   
                 }
-                aux2 = (ArrayList) aux.get(0);
+                
+                try {
+                    aux2 = (ArrayList) aux.get(0);
+                } catch(IndexOutOfBoundsException e) {
+                    
+                    //Still no results found due to lack of
+                    //necessary information
+                    db.closeDB();
+                    return null;
+                }
                 db.executeStmt("DELETE FROM "+tempTableName+" WHERE id= '"+aux2.get(0)+"'");
                 resultsHops.add(aux.get(0));
             }
+            
             // For the next hop clear saved IDs. The user gets results that may have been excluded
             results.clear();
+            
             // Save the results for the starting points of the next iteration
             finalList = new ArrayList();
             for (Object resultsHop : resultsHops) {
@@ -104,6 +123,7 @@ public class Query {
                 finalList.add(resultsHop);
                 finalResults.put(hop, finalList);
             }
+            
             // Clear the auxiliary arraylist
             resultsHops.clear();
         }
