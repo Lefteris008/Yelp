@@ -172,20 +172,4 @@ public class Query {
         }
         return temp;
     }
-
-    /**
-     * @param list A list containing the required data fields for the SQL query
-     * @return 
-     */
-    private static ArrayList containsKey(ArrayList list) {
-        for (int i = 0; i < list.size(); i++) {
-            ArrayList aux = (ArrayList) list.get(i);
-            if (!distinct.containsKey(aux.get(0))) {
-                list.clear();
-                list.add(aux);
-                distinct.put(aux.get(0), 1);
-            }
-        }
-        return list;
-    }
 }
