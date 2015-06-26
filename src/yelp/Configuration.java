@@ -10,7 +10,7 @@ import java.util.Properties;
  *
  * @author  Paraskevas Eleftherios
  * @author  Tzanakas Alexandors
- * @version 2015.06.24_0108
+ * @version 2015.06.26_1853
  */
 public class  Configuration {
     
@@ -23,6 +23,12 @@ public class  Configuration {
     public String businessTableName;
     public String checkinTableName;
     
+    /**
+     * This method extracts the property values from 'config.properties' file
+     * and stores them in the class public variables
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
     public void getPropertyValues() throws FileNotFoundException, IOException {
         
         Properties prop = new Properties();

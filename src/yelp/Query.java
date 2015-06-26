@@ -9,18 +9,31 @@ import java.util.Random;
  *
  * @author  Tzanakas Alexandros
  * @author  Paraskevas Eleftherios
- * @version 2015.06.24_0107
+ * @version 2015.06.26_1850
  */
 public class Query {
 
     private static final HashMap distinct = new HashMap();
     private static String tempTableName;
 
-    /*
-    *   Input:  The variables needed for the query
-    *   Output: The JSON as a string, 0 for no retry or 1 for retry and the
-    *           total time of the execution of the query in milliseconds
-    */
+    
+    /**
+     * This method executes an SQL query using the parameters supplied by
+     * the external applications.
+     * @param hops The businesses in a single path
+     * @param latitude The latitude of the current location of the user
+     * @param longitude The longitude of the current location of the user
+     * @param radius The radius in meters in which the application will search for businesses
+     * @param day The current day in 0-6 values. First day of the week is Sunday (0)
+     * @param time The current time in 0-23 values
+     * @param interval The hours the users wants to stay outside
+     * @param categories The categories the user supplied
+     * @param conf The configuration object
+     * @return A string containing the JSON, a variable which denotes
+     * whether the categorized search succeeded (0) or not (1) and the time
+     * of the execution of the query in milliseconds
+     * @throws SQLException 
+     */
     public static String makeQuery(int hops, double latitude, double longitude, int radius, int day, int time, int interval, ArrayList categories, Configuration conf) throws SQLException {
         int hop = 1;
         int retry = 0;
@@ -40,7 +53,7 @@ public class Query {
         list.add(Integer.toString(time + interval));
         list.add(Integer.toString(3));
         
-        db.executeStmt(stringQuery(list, conf));
+        db.executeStmt(stringQueryTempTable(list, conf));
         
         if (!categories.isEmpty()) {
             list.add("AND category='" + categories.get(0) + "' \n");
@@ -48,7 +61,7 @@ public class Query {
             list.add("\n");
         }
         double startTime = System.currentTimeMillis();
-        results = db.executeStmtWithResults(stringQueryTempTable(list, conf));
+        results = db.executeStmtWithResults(stringQueryCheckIn(list, conf));
         for (Object result : results) {
             aux = (ArrayList) result;
             finalList.add(aux);
@@ -74,11 +87,11 @@ public class Query {
                 } else {
                     list.set(7, "\n");
                 }
-                aux = db.executeStmtWithResults(stringQueryTempTable(list, conf));
+                aux = db.executeStmtWithResults(stringQueryCheckIn(list, conf));
                 if(aux.isEmpty()) { //No POIs are returned
                     retry = 1;
                     list.set(7, "\n");
-                    aux = db.executeStmtWithResults(stringQueryTempTable(list, conf));   
+                    aux = db.executeStmtWithResults(stringQueryCheckIn(list, conf));   
                 }
                 aux = containsKey(aux);
                 resultsHops.add(aux.get(0));
@@ -103,7 +116,14 @@ public class Query {
         return JSON.createJSONResultString(finalResults) + " " + retry + " " + (endTime - startTime);
     }
 
-    private static String stringQuery(ArrayList list, Configuration conf) {
+    /**
+     * This method creates an SQL query that creates a temporary table
+     * which helps in saving the categories of the businesses located in a city
+     * @param list A list containing the required data fields for the SQL query
+     * @param conf The configuration object
+     * @return The SQL query to be executed
+     */
+    private static String stringQueryTempTable(ArrayList list, Configuration conf) {
         String sqlStmt;
         sqlStmt = "CREATE TEMPORARY TABLE "+tempTableName+" AS("
                 + "SELECT * \n"
@@ -114,7 +134,15 @@ public class Query {
         return sqlStmt;
     }
     
-    private static String stringQueryTempTable(ArrayList list, Configuration conf) {
+    /**
+     * This method creates an SQL query that returns the businesses that
+     * have more check-ins in the next hour compared to the hour the user
+     * has defined in the external application. 
+     * @param list A list containing the required data fields for the SQL query
+     * @param conf The configuration object
+     * @return The SQL query to be executed
+     */
+    private static String stringQueryCheckIn(ArrayList list, Configuration conf) {
         String sqlStmt = 
                   "SELECT id, latitude, longitude, business_name, stars, full_address, city, category,\n"
                 + "       CASE WHEN lTime - checkin_time = 1 THEN lCount - checkin_count\n"
@@ -135,6 +163,10 @@ public class Query {
         return sqlStmt;
     }
     
+    /**
+     * Generates a random name for the temporary table
+     * @return The name of the temporary table
+     */
     private static String randomTempTableName(){
         String temp = "";
         Random r = new Random();
@@ -144,7 +176,10 @@ public class Query {
         return temp;
     }
 
-
+    /**
+     * @param list A list containing the required data fields for the SQL query
+     * @return 
+     */
     private static ArrayList containsKey(ArrayList list) {
         for (int i = 0; i < list.size(); i++) {
             ArrayList aux = (ArrayList) list.get(i);

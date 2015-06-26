@@ -11,21 +11,34 @@ import java.util.ArrayList;
  *
  * @author Tzanakas Alexandros
  * @author Paraskevas Eleftherios
- * @version 2015.06.24_0106
+ * @version 2015.06.26_1938
  */
 public final class DBHandling {
 
     Connection conn;
 
+    /**
+     * Creates a handler of the 'postgres' database
+     * @param conf  The configuration object
+     */
     public DBHandling(Configuration conf) {
         conn = dbConnection(conf);
     }
 
+    /**
+     * Terminates the connection of the open database
+     * @throws SQLException 
+     */
     public void closeDB() throws SQLException {
         System.out.println("Database was closed successfully");
         conn.close();
     }
 
+    /**
+     * Creates a connection to the 'postgres' database
+     * @param conf The configuration object
+     * @return 
+     */
     public Connection dbConnection(Configuration conf) {
         Connection c = null;
         try {
@@ -40,6 +53,11 @@ public final class DBHandling {
         return c;
     }
 
+    /**
+     * This method creates tables BUSINESS_LOCATION and CHECKIN_INFO
+     * @param conf The configuration object
+     * @throws SQLException 
+     */
     public void createTables(Configuration conf) throws SQLException {
         Statement stmt = null;
         stmt = conn.createStatement();
@@ -69,6 +87,12 @@ public final class DBHandling {
         stmt.close();
     }
 
+    /**
+     * This method executes the supplied SQL query. It is used for
+     * queries without results (e.g. creation of tables etc)
+     * @param sqlStatement The SQL query statement
+     * @throws SQLException 
+     */
     public void executeStmt(String sqlStatement) throws SQLException {
         Statement stmt = null;
         stmt = conn.createStatement();
@@ -78,6 +102,13 @@ public final class DBHandling {
         conn.commit();
     }
 
+    /**
+     * This method executes the supplied SQL query. It is used for
+     * queries that yield results (e.g. the query that returns businesses)
+     * @param sqlStatement The SQL query statement
+     * @return
+     * @throws SQLException 
+     */
     public ArrayList executeStmtWithResults(String sqlStatement) throws SQLException {
         Statement st = null;
         ResultSet rs = null;

@@ -8,10 +8,15 @@ import org.json.simple.JSONObject;
  *
  * @author  Paraskevas Eleftherios
  * @author  Tzanakas Alexandros
- * @version 2015.06.24_0107
+ * @version 2015.06.26_1851
  */
 public class JSON {
     
+    /**
+     * This method creates a JSON and stores it in a string
+     * @param finalResults The final results extracted from the SQL queries
+     * @return A string with final JSON
+     */
     public static String createJSONResultString(HashMap finalResults) {
         
         // Key are the number of hop and value is an ArrayList with all businesses in the specific hop

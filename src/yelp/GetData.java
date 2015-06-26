@@ -15,12 +15,19 @@ import org.json.simple.parser.ParseException;
  *
  * @author  Tzanakas Alexandros
  * @author  Paraskevas Eleftherios
- * @version 2015.06.24_0107
+ * @version 2015.06.26_1817
  */
 public class GetData {
     
     public static HashMap<String, Integer> checkInCount = new HashMap<>();
     
+    /**
+     * Cleans a string. Receives a string and drops all
+     * '\n' control characters and replaces '\' and ','
+     * characters with white space.
+     * @param s The string to be cleaned
+     * @return The cleaned string
+     */
     public static String cleanString(String s) {
         String cleanString;
         cleanString = s.replaceAll("\n", "");
@@ -30,12 +37,15 @@ public class GetData {
         return cleanString;
     }
     
-    /*
-    *   Stores data into the two main tables of the DB
-    *   Data are extracted from the business and check in
-    *   JSON files and are stored into the BUSINESS_LOCATION
-    *   and CHECKIN_INFO tables respectively
-    */
+    /**
+     * Stores data into the two main tables of the DB.
+     * Data are extracted from the business and check in
+     * JSON files and are stored into the BUSINESS_LOCATION
+     * and CHECKIN_INFO tables respectively.
+     * @param clus An object containing the parent categories of the businesses
+     * @param conf The configuration object, containing info about global variables
+     * @throws SQLException 
+     */
     public static void storeData(Clustering clus, Configuration conf) throws SQLException {
 
         BufferedReader br1 = null;
@@ -145,10 +155,12 @@ public class GetData {
         }
     }
     
-    /*
-    *   Check whether the business has at least 100
-    *   check ins and if not, return false (filter it out)
-    */
+    /**
+     * Checks whether the business has at least 100 check-ins
+     * @param businessId The id of the business to be checked
+     * @return True if the business has at least 100 check-ins
+     * and false if it hasn't
+     */
     public static boolean isFilteredOut(String businessId) {
         if(checkInCount.containsKey(businessId)) {
             if(checkInCount.get(businessId) >= 100) {

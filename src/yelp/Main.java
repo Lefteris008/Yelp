@@ -15,6 +15,12 @@ import org.json.simple.parser.ParseException;
  */
 public class Main {
     
+    /**
+     * This method replaces the underscores with white space.
+     * @param categories A string array with the categories
+     * supplied by the external application
+     * @return The string array with the underscores replaces 
+     */
     private static String[] trimUnderscores(String[] categories) {
         int i = 0;
         for (String category : categories) {
@@ -49,6 +55,7 @@ public class Main {
         if(choice == 0) {
             Clustering clus = new Clustering();
             clus.getParentClustersFromJSON(conf);
+            
             GetData.storeData(clus, conf);
         } else if(choice==1){
             jsonToPHP = Query.makeQuery(hops, lat, lon, radius, checkInDay, checkInHour, interval, new ArrayList<>(Arrays.asList(categories)), conf);

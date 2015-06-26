@@ -15,7 +15,7 @@ import org.json.simple.parser.ParseException;
  *
  * @author  Paraskevas Eleftherios
  * @author  Tzanakas Alexandros
- * @version 2015.06.24_0108
+ * @version 2015.06.26_1938
  */
 
 public class Clustering {
@@ -26,6 +26,14 @@ public class Clustering {
         ///
     }
     
+    /**
+     * Gets the parent categories from the Yelp categories JSON.
+     * @param conf The configuration object
+     * @return True if the clusters are successfully extracted from the JSON, false otherwise
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws ParseException 
+     */
     public boolean getParentClustersFromJSON(Configuration conf) throws FileNotFoundException, IOException, ParseException {
         BufferedReader br;
         JSONParser parser = new JSONParser();
@@ -53,6 +61,12 @@ public class Clustering {
         return true;
     }
     
+    /**
+     * This method tokenizes a camel case formed string. Each
+     * token is a separate word.
+     * @param s The string that is formed using the camel case
+     * @return The string with white space
+     */
     static String splitCamelCase(String s) {
         return s.replaceAll(
            String.format("%s|%s|%s",
@@ -64,42 +78,29 @@ public class Clustering {
         );
      }
     
+    /**
+     * This method checks whether a category is parent
+     * @param category The category to be checked
+     * @return True if the category is parent, false otherwise
+     */
     public boolean isParentCluster(String category) {
         return parentClusters.contains(category);
     }
     
+    /**
+     * Returns the total number of parent categories.
+     * @return The total number of parent categories
+     */
     public int returnTotalNumberOfParentClusters() {
         return parentClusters.size();
     }
     
+    /**
+     * Prints the parent categories.
+     */
     public void printParentClusters() {
         parentClusters.stream().forEach((cat) -> {
             System.out.println(cat);
         });
     }
-    
-    /*
-    public static void configureJSON() throws FileNotFoundException, IOException {
-        BufferedReader br1 = new BufferedReader(new FileReader(Configuration.categoriesFilePath));
-        BufferedWriter bw = new BufferedWriter(new FileWriter(Configuration.categories2FilePath));
-        String sCurrentLine, newLine = "";
-        while ((sCurrentLine = br1.readLine()) != null) {
-            if(sCurrentLine.equals("[")) {
-                continue;
-            }
-            //Find the new JSON instance
-            if(!sCurrentLine.equals("    },")) {
-                newLine = newLine + sCurrentLine.replaceAll("\n", "");
-            } else {
-                newLine = newLine + "}\n";
-                newLine = newLine.replaceAll(" ", "");
-                //Store it into the new file
-                bw.write(newLine);
-                newLine = "";
-            }
-        }
-        br1.close();
-        bw.close();
-    }
-    */
 }
