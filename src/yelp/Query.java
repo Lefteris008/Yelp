@@ -13,7 +13,6 @@ import java.util.Random;
  */
 public class Query {
 
-    private static final HashMap distinct = new HashMap();
     private static String tempTableName;
 
     
@@ -43,7 +42,7 @@ public class Query {
         ArrayList results;
         ArrayList resultsHops = new ArrayList();
         ArrayList list = new ArrayList();
-        ArrayList aux;
+        ArrayList aux, aux2;
         ArrayList finalList = new ArrayList();
         list.add(Float.toString((float) latitude));
         list.add(Float.toString((float) longitude));
@@ -66,6 +65,7 @@ public class Query {
             aux = (ArrayList) result;
             finalList.add(aux);
             finalResults.put(hop, finalList);
+            // Remove from table the row with the specific id so that there are no duplicates
             db.executeStmt("DELETE FROM "+tempTableName+" WHERE id= '"+aux.get(0)+"'");
         }
         for (int i = 1; i < hops; i++) {
@@ -80,8 +80,6 @@ public class Query {
                 // Change the time
                 list.set(4, time);
                 list.set(5, time + interval);
-                // The number of the results are 3
-                list.set(6, 3);
                 if (!categories.isEmpty()) {
                     list.set(7, "AND category = '" + categories.get(i) + "' \n");
                 } else {
@@ -93,12 +91,11 @@ public class Query {
                     list.set(7, "\n");
                     aux = db.executeStmtWithResults(stringQueryCheckIn(list, conf));   
                 }
-                aux = containsKey(aux);
+                aux2 = (ArrayList) aux.get(0);
+                db.executeStmt("DELETE FROM "+tempTableName+" WHERE id= '"+aux2.get(0)+"'");
                 resultsHops.add(aux.get(0));
-                db.executeStmt("DELETE FROM "+tempTableName+" WHERE id= '"+aux.get(0)+"'");
             }
             // For the next hop clear saved IDs. The user gets results that may have been excluded
-
             results.clear();
             // Save the results for the starting points of the next iteration
             finalList = new ArrayList();
