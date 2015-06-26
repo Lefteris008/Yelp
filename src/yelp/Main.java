@@ -55,7 +55,6 @@ public class Main {
         if(choice == 0) {
             Clustering clus = new Clustering();
             clus.getParentClustersFromJSON(conf);
-            
             GetData.storeData(clus, conf);
         } else if(choice==1){
             jsonToPHP = Query.makeQuery(hops, lat, lon, radius, checkInDay, checkInHour, interval, new ArrayList<>(Arrays.asList(categories)), conf);

@@ -22,6 +22,9 @@ public class Clustering {
     
     private static final Set<String> parentClusters = new HashSet<>();
     
+    /**
+     * Empty constructor
+     */
     public Clustering() {
         ///
     }
